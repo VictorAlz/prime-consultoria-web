@@ -92,7 +92,7 @@ const Footer = () => {
         </div>
 
         {/* Copyright */}
-        <div className="border-t border-primary-foreground/20 mt-12 pt-8 text-center text-sm text-primary-foreground/60">
+        <div className="mt-12 pt-8 text-center text-sm text-primary-foreground/60">
           <p>© {currentYear} Consultoria. Todos os direitos reservados.</p>
         </div>
       </div>
