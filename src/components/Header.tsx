@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
+import ContactDialog from "@/components/ContactDialog";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -28,10 +29,8 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md shadow-md"
-          : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/95 backdrop-blur-md ${
+        isScrolled ? "shadow-md" : ""
       }`}
     >
       <nav className="container-custom">
@@ -58,9 +57,13 @@ const Header = () => {
                 {link.name}
               </Link>
             ))}
-            <Button className="btn-highlight rounded-full px-6">
-              Entre em Contato
-            </Button>
+            <ContactDialog
+              trigger={
+                <Button className="btn-highlight rounded-full px-6">
+                  Entre em Contato
+                </Button>
+              }
+            />
           </div>
 
           {/* Mobile Menu Button */}
@@ -95,9 +98,13 @@ const Header = () => {
                   {link.name}
                 </Link>
               ))}
-              <Button className="btn-highlight rounded-full w-full">
-                Entre em Contato
-              </Button>
+              <ContactDialog
+                trigger={
+                  <Button className="btn-highlight rounded-full w-full">
+                    Entre em Contato
+                  </Button>
+                }
+              />
             </div>
           </div>
         )}
