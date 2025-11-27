@@ -6,6 +6,7 @@ import HistorySection from "@/components/HistorySection";
 import CaseCard from "@/components/CaseCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const Index = () => {
   const featuredCases = [
@@ -63,13 +64,15 @@ const Index = () => {
           </div>
 
           <div className="text-center animate-fade-in">
-            <Button
-              size="lg"
-              className="btn-primary rounded-full px-8 group"
-            >
-              Ver Todos os Cases
-              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link to="/cases">
+              <Button
+                size="lg"
+                className="btn-primary rounded-full px-8 group"
+              >
+                Ver Todos os Cases
+                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
