@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Facebook, Instagram, Linkedin, Twitter, Mail, Phone, MapPin } from "lucide-react";
+import femassLogo from "@/assets/femass-logo.png";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -25,9 +26,11 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Logo da Instituição Parceira */}
           <div className="space-y-4">
-            <div className="text-xl font-bold">
-              Instituição<span className="text-accent">.</span>
-            </div>
+            <img 
+              src={femassLogo} 
+              alt="FeMASS - Faculdade Prof Miguel Ângelo da Silva Santos" 
+              className="h-20 w-auto"
+            />
             <p className="text-sm text-primary-foreground/80">
               Parceiro oficial desde 2020
             </p>
