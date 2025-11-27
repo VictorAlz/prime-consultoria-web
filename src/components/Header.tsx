@@ -3,6 +3,7 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import ContactDialog from "@/components/ContactDialog";
+import logo from "@/assets/logo.png";
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -29,17 +30,18 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-background/95 backdrop-blur-md ${
-        isScrolled ? "shadow-md" : ""
-      }`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-md`}
+      style={{ backgroundColor: '#4a2281' }}
     >
       <nav className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <div className="text-2xl md:text-3xl font-bold text-primary">
-              Consultoria<span className="text-highlight">.</span>
-            </div>
+          <Link to="/" className="flex items-center">
+            <img 
+              src={logo} 
+              alt="CASE - Empresa Júnior" 
+              className="h-12 md:h-14 w-auto object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -48,10 +50,10 @@ const Header = () => {
               <Link
                 key={link.path}
                 to={link.path}
-                className={`text-sm font-medium transition-colors hover:text-primary ${
+                className={`text-sm font-medium transition-colors ${
                   isActive(link.path)
-                    ? "text-primary"
-                    : "text-muted-foreground"
+                    ? "text-white"
+                    : "text-white/80 hover:text-white"
                 }`}
               >
                 {link.name}
@@ -73,26 +75,29 @@ const Header = () => {
             aria-label="Toggle menu"
           >
             {isMobileMenuOpen ? (
-              <X className="h-6 w-6 text-foreground" />
+              <X className="h-6 w-6 text-white" />
             ) : (
-              <Menu className="h-6 w-6 text-foreground" />
+              <Menu className="h-6 w-6 text-white" />
             )}
           </button>
         </div>
 
         {/* Mobile Navigation */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden absolute top-20 left-0 right-0 bg-background border-b shadow-lg animate-fade-in">
+          <div 
+            className="lg:hidden absolute top-20 left-0 right-0 border-b shadow-lg animate-fade-in"
+            style={{ backgroundColor: '#4a2281' }}
+          >
             <div className="flex flex-col space-y-4 p-6">
               {navLinks.map((link) => (
                 <Link
                   key={link.path}
                   to={link.path}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`text-base font-medium transition-colors hover:text-primary ${
+                  className={`text-base font-medium transition-colors ${
                     isActive(link.path)
-                      ? "text-primary"
-                      : "text-muted-foreground"
+                      ? "text-white"
+                      : "text-white/80 hover:text-white"
                   }`}
                 >
                   {link.name}
