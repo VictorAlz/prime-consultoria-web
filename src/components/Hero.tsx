@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-image.jpg";
 import ContactDialog from "@/components/ContactDialog";
 
@@ -43,12 +44,14 @@ const Hero = () => {
                 </Button>
               }
             />
-            <Button
-              size="lg"
-              className="btn-highlight rounded-full text-base md:text-lg px-8 py-6"
-            >
-              Conheça Nossos Cases
-            </Button>
+            <Link to="/cases">
+              <Button
+                size="lg"
+                className="btn-highlight rounded-full text-base md:text-lg px-8 py-6"
+              >
+                Conheça Nossos Cases
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}

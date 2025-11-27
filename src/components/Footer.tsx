@@ -13,10 +13,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Instagram, href: "#", label: "Instagram" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Twitter, href: "#", label: "Twitter" },
+    { icon: Facebook, href: "https://facebook.com/suaempresa", label: "Facebook" },
+    { icon: Instagram, href: "https://instagram.com/suaempresa", label: "Instagram" },
+    { icon: Linkedin, href: "https://linkedin.com/company/suaempresa", label: "LinkedIn" },
+    { icon: Twitter, href: "https://twitter.com/suaempresa", label: "Twitter" },
   ];
 
   return (
@@ -81,6 +81,8 @@ const Footer = () => {
                 <a
                   key={social.label}
                   href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={social.label}
                   className="w-10 h-10 rounded-full bg-primary-foreground/10 hover:bg-accent transition-colors flex items-center justify-center group"
                 >
