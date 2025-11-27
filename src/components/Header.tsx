@@ -36,7 +36,11 @@ const Header = () => {
       <nav className="container-custom">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link to="/" className="flex items-center">
+          <Link 
+            to="/" 
+            className="flex items-center"
+            onClick={() => window.scrollTo(0, 0)}
+          >
             <img 
               src={logo} 
               alt="CASE - Empresa Júnior" 
