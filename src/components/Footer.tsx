@@ -14,10 +14,9 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: Facebook, href: "https://facebook.com/suaempresa", label: "Facebook" },
-    { icon: Instagram, href: "https://instagram.com/suaempresa", label: "Instagram" },
-    { icon: Linkedin, href: "https://linkedin.com/company/suaempresa", label: "LinkedIn" },
-    { icon: Twitter, href: "https://twitter.com/suaempresa", label: "Twitter" },
+    { icon: Facebook, href: "https://www.facebook.com/CASEEmpresaJr/?locale=pt_BR", label: "Facebook" },
+    { icon: Instagram, href: "https://www.instagram.com/caseempresajunior/", label: "Instagram" },
+    { icon: Linkedin, href: "linkedin.com/company/case-empresa-júnior?originalSubdomain=br", label: "LinkedIn" },
   ];
 
   return (
