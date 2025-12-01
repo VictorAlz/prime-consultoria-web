@@ -18,6 +18,17 @@ const Header = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on resize to desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Sobre Nós", path: "/about" },
@@ -48,9 +59,33 @@ const Header = () => {
             />
           </Link>
 
-          {/* Menu Button */}
+          {/* Desktop Navigation */}
+          <div className="hidden lg:flex items-center gap-8">
+            {navLinks.map((link) => (
+              <Link
+                key={link.path}
+                to={link.path}
+                className={`text-sm font-medium transition-colors ${
+                  isActive(link.path)
+                    ? "text-white"
+                    : "text-white/80 hover:text-white"
+                }`}
+              >
+                {link.name}
+              </Link>
+            ))}
+            <ContactDialog
+              trigger={
+                <Button className="btn-highlight rounded-full px-6">
+                  Entre em Contato
+                </Button>
+              }
+            />
+          </div>
+
+          {/* Mobile Menu Button */}
           <button
-            className="p-2"
+            className="lg:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -62,10 +97,10 @@ const Header = () => {
           </button>
         </div>
 
-        {/* Navigation Menu */}
+        {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div 
-            className="absolute top-20 left-0 right-0 border-b shadow-lg animate-fade-in"
+            className="lg:hidden absolute top-20 left-0 right-0 border-b shadow-lg animate-fade-in"
             style={{ backgroundColor: '#4a2281' }}
           >
             <div className="flex flex-col space-y-4 p-6">
