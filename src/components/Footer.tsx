@@ -11,6 +11,7 @@ const Footer = () => {
     { name: "Cases", path: "/cases" },
     { name: "Soluções", path: "/solutions" },
     { name: "Nosso Time", path: "/team" },
+    { name: "Área Membros", path: "/admin/login" },
   ];
 
   const socialLinks = [
