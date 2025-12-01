@@ -6,18 +6,18 @@ import { Linkedin, Mail } from "lucide-react";
 const Team = () => {
   const teamMembers = [
     {
-      name: "Ana Silva",
-      role: "CEO & Founder",
+      name: "Lualinda",
+      role: "Diretora Presidente",
       bio: "15+ anos de experiência em consultoria estratégica",
     },
     {
-      name: "Carlos Oliveira",
-      role: "Director de Operações",
+      name: "Ryan",
+      role: "Diretor Comercial",
       bio: "Especialista em transformação digital e gestão de projetos",
     },
     {
-      name: "Mariana Santos",
-      role: "Head de Estratégia",
+      name: "Victor",
+      role: "Diretor Projetos",
       bio: "MBA pela Harvard Business School, ex-consultora McKinsey",
     },
     {
@@ -45,12 +45,9 @@ const Team = () => {
       <section className="pt-32 pb-20 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Nosso Time
-            </h1>
+            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">Nosso Time</h1>
             <p className="text-lg md:text-xl text-primary-foreground/90">
-              Conheça os profissionais excepcionais que tornam possível a
-              transformação dos nossos clientes.
+              Conheça os profissionais excepcionais que tornam possível a transformação dos nossos clientes.
             </p>
           </div>
         </div>
@@ -71,7 +68,10 @@ const Team = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center">
                       <span className="text-4xl font-bold text-primary">
-                        {member.name.split(" ").map(n => n[0]).join("")}
+                        {member.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </span>
                     </div>
                   </div>
@@ -110,12 +110,10 @@ const Team = () => {
       <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10">
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Junte-se ao Nosso Time
-            </h2>
+            <h2 className="text-3xl md:text-4xl font-bold">Junte-se ao Nosso Time</h2>
             <p className="text-lg text-muted-foreground">
-              Estamos sempre em busca de talentos excepcionais. Se você é
-              apaixonado por estratégia e transformação, queremos conhecê-lo.
+              Estamos sempre em busca de talentos excepcionais. Se você é apaixonado por estratégia e transformação,
+              queremos conhecê-lo.
             </p>
             <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
               Ver Oportunidades
