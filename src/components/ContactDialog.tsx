@@ -70,59 +70,71 @@ const ContactDialog = ({ trigger }: ContactDialogProps) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[500px] max-h-[85vh] sm:max-h-[90vh] overflow-y-auto p-4 sm:p-6">
-        <DialogHeader className="space-y-2">
-          <DialogTitle className="text-xl sm:text-2xl">Fale com um Especialista</DialogTitle>
-          <DialogDescription className="text-sm">
+      <DialogContent className="w-[92vw] max-w-[500px] max-h-[90vh] overflow-y-auto p-4 sm:p-6 mx-auto rounded-xl">
+        <DialogHeader className="space-y-1.5 sm:space-y-2 pb-2">
+          <DialogTitle className="text-lg sm:text-xl md:text-2xl leading-tight">
+            Fale com um Especialista
+          </DialogTitle>
+          <DialogDescription className="text-xs sm:text-sm leading-relaxed">
             Conte-nos sobre seu projeto e entraremos em contato em breve.
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4 mt-3 sm:mt-4">
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="name" className="text-sm">Nome Completo *</Label>
+        <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
+          <div className="space-y-1 sm:space-y-1.5">
+            <Label htmlFor="name" className="text-xs sm:text-sm font-medium">
+              Nome Completo *
+            </Label>
             <Input
               id="name"
               placeholder="Seu nome"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               required
-              className="text-sm sm:text-base"
+              className="h-9 sm:h-10 text-sm"
             />
           </div>
 
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="email" className="text-sm">E-mail *</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="seu@email.com"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              required
-              className="text-sm sm:text-base"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+            <div className="space-y-1 sm:space-y-1.5">
+              <Label htmlFor="email" className="text-xs sm:text-sm font-medium">
+                E-mail *
+              </Label>
+              <Input
+                id="email"
+                type="email"
+                placeholder="seu@email.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                required
+                className="h-9 sm:h-10 text-sm"
+              />
+            </div>
+
+            <div className="space-y-1 sm:space-y-1.5">
+              <Label htmlFor="phone" className="text-xs sm:text-sm font-medium">
+                Telefone
+              </Label>
+              <Input
+                id="phone"
+                type="tel"
+                placeholder="(00) 00000-0000"
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="h-9 sm:h-10 text-sm"
+              />
+            </div>
           </div>
 
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="phone" className="text-sm">Telefone</Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="(00) 00000-0000"
-              value={formData.phone}
-              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              className="text-sm sm:text-base"
-            />
-          </div>
-
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="serviceType" className="text-sm">Tipo de Serviço *</Label>
+          <div className="space-y-1 sm:space-y-1.5">
+            <Label htmlFor="serviceType" className="text-xs sm:text-sm font-medium">
+              Tipo de Serviço *
+            </Label>
             <Select
               value={formData.serviceType}
               onValueChange={(value) => setFormData({ ...formData, serviceType: value })}
               required
             >
-              <SelectTrigger id="serviceType" className="text-sm sm:text-base">
+              <SelectTrigger id="serviceType" className="h-9 sm:h-10 text-sm">
                 <SelectValue placeholder="Selecione o tipo de serviço" />
               </SelectTrigger>
               <SelectContent>
@@ -136,19 +148,24 @@ const ContactDialog = ({ trigger }: ContactDialogProps) => {
             </Select>
           </div>
 
-          <div className="space-y-1.5 sm:space-y-2">
-            <Label htmlFor="message" className="text-sm">Mensagem</Label>
+          <div className="space-y-1 sm:space-y-1.5">
+            <Label htmlFor="message" className="text-xs sm:text-sm font-medium">
+              Mensagem
+            </Label>
             <Textarea
               id="message"
               placeholder="Conte-nos mais sobre seu projeto..."
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               rows={3}
-              className="resize-none text-sm sm:text-base"
+              className="resize-none text-sm min-h-[70px] sm:min-h-[80px]"
             />
           </div>
 
-          <Button type="submit" className="w-full btn-highlight text-sm sm:text-base h-10 sm:h-11">
+          <Button 
+            type="submit" 
+            className="w-full btn-highlight text-sm h-10 sm:h-11 mt-2"
+          >
             Enviar Mensagem
           </Button>
         </form>
