@@ -26,7 +26,7 @@ const Footer = () => {
           {/* Logo da Instituição Parceira */}
           <div className="space-y-4">
             <img src={femassLogo} alt="FeMASS - Faculdade Prof Miguel Ângelo da Silva Santos" className="h-20 w-auto" />
-            <p className="text-sm text-primary-foreground/80">Instituição de Ensino :</p>
+            <p className="text-sm text-primary-foreground/80">Instituição de Ensino</p>
           </div>
 
           {/* Informações da Empresa */}
