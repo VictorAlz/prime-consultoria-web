@@ -26,14 +26,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Logo da Instituição Parceira */}
           <div className="space-y-4">
-            <img 
-              src={femassLogo} 
-              alt="FeMASS - Faculdade Prof Miguel Ângelo da Silva Santos" 
-              className="h-20 w-auto"
-            />
-            <p className="text-sm text-primary-foreground/80">
-              Parceiro oficial desde 2020
-            </p>
+            <img src={femassLogo} alt="FeMASS - Faculdade Prof Miguel Ângelo da Silva Santos" className="h-20 w-auto" />
+            <p className="text-sm text-primary-foreground/80">Instituição de Ensino :</p>
           </div>
 
           {/* Informações da Empresa */}
@@ -43,19 +37,20 @@ const Footer = () => {
               <div className="flex items-start space-x-2">
                 <MapPin className="h-5 w-5 flex-shrink-0 mt-0.5" />
                 <span>
-                  Av. Paulista, 1000<br />
-                  São Paulo, SP - 01310-100
+                  Av. Aluizio da Silva Gomes, nº 50
+                  <br />
+                  Granja dos Cavaleiros, Macaé - RJ, 27930-560
                 </span>
               </div>
               <div className="flex items-center space-x-2">
                 <Phone className="h-5 w-5 flex-shrink-0" />
-                <span>(11) 3000-0000</span>
+                <span>(22) 99946-4910</span>
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 flex-shrink-0" />
                 <span>contato@consultoria.com.br</span>
               </div>
-              <p className="pt-2">CNPJ: 00.000.000/0001-00</p>
+              <p className="pt-2">CNPJ: 26.676.739/0001-01</p>
             </div>
           </div>
 
