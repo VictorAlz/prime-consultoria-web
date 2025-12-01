@@ -47,7 +47,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 flex-shrink-0" />
-                <span>contato@consultoria.com.br</span>
+                <span>contato@caseej.com</span>
               </div>
               <p className="pt-2">CNPJ: 26.676.739/0001-01</p>
             </div>
