@@ -24,10 +24,10 @@ const App = () => (
         <ScrollToTop />
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/about" element={<About />} />
+          <Route path="/sobre" element={<About />} />
           <Route path="/cases" element={<Cases />} />
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/team" element={<Team />} />
+          <Route path="/solucoes" element={<Solutions />} />
+          <Route path="/equipe" element={<Team />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
