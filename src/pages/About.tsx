@@ -4,12 +4,12 @@ import { CheckCircle2 } from "lucide-react";
 
 const About = () => {
   const values = [
-    "Excelência em tudo que fazemos",
-    "Inovação contínua",
-    "Integridade e transparência",
-    "Foco no cliente",
-    "Colaboração e trabalho em equipe",
-    "Responsabilidade social",
+    "Liderança e trabalho em equipe",
+    "Gestão empresarial na prática",
+    "Responsabilidade, ética e visão estratégica",
+    "Aprendizado além da sala de aula",
+    "Compromisso com resultados",
+    "Inovação e criatividade",
   ];
 
   return (
@@ -21,11 +21,11 @@ const About = () => {
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Sobre Nós
+              Sobre a CASE EJ
             </h1>
             <p className="text-lg md:text-xl text-primary-foreground/90">
-              Uma história de excelência, inovação e compromisso com o sucesso
-              dos nossos clientes.
+              A primeira empresa júnior multidisciplinar de Macaé, formando 
+              profissionais através da experiência prática.
             </p>
           </div>
         </div>
@@ -40,23 +40,24 @@ const About = () => {
                 Nossa História
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Fundada em 2009, nossa consultoria nasceu da visão de
-                profissionais experientes que acreditavam no poder da estratégia
-                bem executada para transformar negócios. Ao longo dos anos,
-                crescemos de uma pequena equipe para uma das principais
-                consultorias do país.
+                A CASE EJ surgiu a partir da necessidade de experiência prática 
+                para estudantes universitários de Macaé. Somos a <strong>primeira 
+                empresa júnior multidisciplinar da cidade</strong>, criada por 
+                estudantes universitários com apoio de professor orientador.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Nossa trajetória é marcada por projetos desafiadores, clientes
-                satisfeitos e resultados que superam expectativas. Trabalhamos
-                com empresas de diversos portes e setores, sempre com o mesmo
-                compromisso: entregar excelência e gerar valor real.
+                Desde nossa fundação, oferecemos serviços voltados para 
+                <strong> consultoria e assessoria empresarial</strong>, com foco em 
+                pequenos empreendedores locais. Nossos primeiros projetos foram 
+                desenvolvidos junto à comunidade empresarial de Macaé, gerando 
+                impacto real e aprendizado significativo para nossos membros.
               </p>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                Hoje, somos reconhecidos como referência em consultoria
-                estratégica, transformação digital e otimização de processos,
-                com uma equipe multidisciplinar de especialistas prontos para
-                enfrentar os desafios mais complexos.
+                Acreditamos que o aprendizado vai muito além da sala de aula. 
+                Através da CASE EJ, nossos membros desenvolvem habilidades 
+                essenciais como liderança, trabalho em equipe, gestão empresarial 
+                na prática, responsabilidade, ética e visão estratégica — 
+                competências que os preparam para os desafios do mercado de trabalho.
               </p>
             </div>
           </div>
@@ -72,9 +73,9 @@ const About = () => {
                 Nossa Missão
               </h3>
               <p className="text-muted-foreground">
-                Transformar desafios empresariais em oportunidades de
-                crescimento, através de soluções estratégicas inovadoras e
-                resultados mensuráveis.
+                Formar profissionais capacitados através da vivência empresarial, 
+                oferecendo soluções de consultoria e assessoria de qualidade para 
+                pequenos empreendedores da região de Macaé.
               </p>
             </div>
 
@@ -83,8 +84,9 @@ const About = () => {
                 Nossa Visão
               </h3>
               <p className="text-muted-foreground">
-                Ser reconhecida como a consultoria mais confiável e inovadora da
-                América Latina, referência em transformação empresarial.
+                Ser reconhecida como a principal empresa júnior multidisciplinar 
+                de Macaé, referência em desenvolvimento de talentos e impacto 
+                social através do empreendedorismo.
               </p>
             </div>
 
@@ -93,8 +95,9 @@ const About = () => {
                 Nossos Princípios
               </h3>
               <p className="text-muted-foreground">
-                Guiados por ética, excelência e inovação, construímos relações
-                duradouras baseadas em confiança e resultados.
+                Guiados por ética, responsabilidade e visão estratégica, 
+                construímos aprendizado prático que transforma estudantes em 
+                profissionais preparados para o mercado.
               </p>
             </div>
           </div>
