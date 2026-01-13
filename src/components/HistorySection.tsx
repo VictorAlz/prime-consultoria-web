@@ -4,27 +4,33 @@ const HistorySection = () => {
   const milestones = [
     {
       icon: Calendar,
-      year: "2009",
+      year: "2015",
       title: "Fundação",
-      description: "Iniciamos nossa jornada com uma visão clara de excelência",
+      description: "Abertura do CNPJ e criação do estatuto da empresa",
     },
     {
       icon: Users,
-      year: "2015",
-      title: "Expansão",
-      description: "Crescimento da equipe e abertura de novas filiais",
+      year: "2018",
+      title: "Impacto Social",
+      description: "Primeiros projetos de impacto social na comunidade",
     },
     {
       icon: TrendingUp,
       year: "2020",
-      title: "Inovação",
-      description: "Implementação de metodologias ágeis e transformação digital",
+      title: "Federação",
+      description: "Federação no meio da pandemia e primeiro ENEJ da CASE",
     },
     {
       icon: Award,
+      year: "2023",
+      title: "Prêmio Nestlé",
+      description: "Reconhecimento pelo Prêmio Nestlé de impacto social",
+    },
+    {
+      icon: TrendingUp,
       year: "2024",
-      title: "Reconhecimento",
-      description: "Prêmios nacionais e internacionais de excelência",
+      title: "Reestruturação",
+      description: "Reestruturação interna, novos desafios e meta do ano batida",
     },
   ];
 
@@ -41,7 +47,7 @@ const HistorySection = () => {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {milestones.map((milestone, index) => (
             <div
               key={index}
