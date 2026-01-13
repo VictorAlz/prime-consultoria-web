@@ -1,22 +1,27 @@
 const ClientCarousel = () => {
-  // Array de logos de clientes (podem ser substituídos por logos reais)
+  // Array de empresas parceiras fictícias
   const clients = [
-    "Cliente A",
-    "Cliente B",
-    "Cliente C",
-    "Cliente D",
-    "Cliente E",
-    "Cliente F",
-    "Cliente G",
-    "Cliente H",
-    "Cliente A", // Duplicado para efeito infinito
-    "Cliente B",
-    "Cliente C",
-    "Cliente D",
-    "Cliente E",
-    "Cliente F",
-    "Cliente G",
-    "Cliente H",
+    "Nestlé",
+    "Sebrae",
+    "Brasil Júnior",
+    "UFMG",
+    "Senac",
+    "Prefeitura de BH",
+    "Instituto Ayrton Senna",
+    "Fundação Bradesco",
+    "Ambev",
+    "Vale",
+    // Duplicados para efeito infinito
+    "Nestlé",
+    "Sebrae",
+    "Brasil Júnior",
+    "UFMG",
+    "Senac",
+    "Prefeitura de BH",
+    "Instituto Ayrton Senna",
+    "Fundação Bradesco",
+    "Ambev",
+    "Vale",
   ];
 
   return (
