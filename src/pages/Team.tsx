@@ -20,6 +20,26 @@ const Team = () => {
       role: "Diretor de Gente e Gestão",
       bio: "",
     },
+    {
+      name: "Vitoria",
+      role: "Assessora de Presidência",
+      bio: "",
+    },
+    {
+      name: "Rafael",
+      role: "Assessor de Projetos",
+      bio: "",
+    },
+    {
+      name: "Robert",
+      role: "Assessor de Projetos",
+      bio: "",
+    },
+    {
+      name: "Nathan",
+      role: "Assessor de Projetos",
+      bio: "",
+    },
   ];
 
   return (
