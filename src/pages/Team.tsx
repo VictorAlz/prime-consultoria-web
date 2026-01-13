@@ -6,34 +6,14 @@ import { Linkedin, Mail } from "lucide-react";
 const Team = () => {
   const teamMembers = [
     {
-      name: "Lualinda",
-      role: "Diretora Presidente",
-      bio: "15+ anos de experiência em consultoria estratégica",
-    },
-    {
       name: "Ryan",
-      role: "Diretor Comercial",
-      bio: "Especialista em transformação digital e gestão de projetos",
+      role: "Diretor Presidente",
+      bio: "",
     },
     {
       name: "Victor",
-      role: "Diretor Projetos",
-      bio: "MBA pela Harvard Business School, ex-consultora McKinsey",
-    },
-    {
-      name: "Ricardo Mendes",
-      role: "Head de Tecnologia",
-      bio: "Expert em inovação digital e arquitetura de sistemas",
-    },
-    {
-      name: "Juliana Costa",
-      role: "Head de Pessoas",
-      bio: "Especialista em desenvolvimento organizacional e cultura",
-    },
-    {
-      name: "Pedro Almeida",
-      role: "Senior Partner",
-      bio: "20+ anos liderando projetos de expansão internacional",
+      role: "Diretor de Projetos",
+      bio: "",
     },
   ];
 
