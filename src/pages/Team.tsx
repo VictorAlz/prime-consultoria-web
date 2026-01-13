@@ -15,6 +15,11 @@ const Team = () => {
       role: "Diretor de Projetos",
       bio: "",
     },
+    {
+      name: "Kauan",
+      role: "Diretor de Gente e Gestão",
+      bio: "",
+    },
   ];
 
   return (
