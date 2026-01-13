@@ -7,10 +7,10 @@ const Footer = () => {
 
   const navigationLinks = [
     { name: "Home", path: "/" },
-    { name: "Sobre Nós", path: "/about" },
+    { name: "Sobre Nós", path: "/sobre" },
     { name: "Cases", path: "/cases" },
-    { name: "Soluções", path: "/solutions" },
-    { name: "Nosso Time", path: "/team" },
+    { name: "Soluções", path: "/solucoes" },
+    { name: "Nosso Time", path: "/equipe" },
     { name: "Área Membros", path: "/admin/login" },
   ];
 
@@ -93,7 +93,7 @@ const Footer = () => {
 
         {/* Copyright */}
         <div className="mt-12 pt-8 text-center text-sm text-primary-foreground/60">
-          <p>© {currentYear} Consultoria. Todos os direitos reservados.</p>
+          <p>© 2026 CASE Empresa Júnior. Todos os direitos reservados.</p>
         </div>
       </div>
     </footer>
