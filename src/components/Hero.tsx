@@ -11,7 +11,7 @@ const Hero = () => {
       <div className="absolute inset-0 z-0">
         <img
           src={heroImage}
-          alt="Consultoria profissional"
+          alt="Desenvolvimento de software"
           className="w-full h-full object-cover opacity-20"
         />
         <div className="absolute inset-0 bg-gradient-to-br from-primary/90 via-primary/80 to-transparent"></div>
@@ -21,15 +21,15 @@ const Hero = () => {
       <div className="container-custom relative z-10 pt-32 pb-20">
         <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-primary-foreground leading-tight">
-            Transformando desafios em
+            Suas ideias em
             <span className="block mt-2 bg-gradient-to-r from-accent via-highlight to-accent bg-clip-text text-transparent">
-              oportunidades de sucesso
+              soluções digitais reais
             </span>
           </h1>
 
           <p className="text-lg md:text-xl lg:text-2xl text-primary-foreground/90 max-w-3xl mx-auto leading-relaxed">
-            Consultoria estratégica de alto nível para empresas que buscam
-            excelência, inovação e resultados transformadores.
+            Desenvolvemos sites, web apps e automações com inteligência artificial
+            para transformar o seu negócio.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
@@ -57,10 +57,10 @@ const Hero = () => {
           {/* Stats */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8 pt-16 max-w-4xl mx-auto">
             {[
-              { number: "15+", label: "Anos de Experiência" },
-              { number: "500+", label: "Projetos Entregues" },
-              { number: "100+", label: "Clientes Satisfeitos" },
-              { number: "98%", label: "Taxa de Sucesso" },
+              { number: "3+", label: "Anos de Atuação" },
+              { number: "50+", label: "Projetos Entregues" },
+              { number: "30+", label: "Clientes Atendidos" },
+              { number: "100%", label: "Comprometimento" },
             ].map((stat, index) => (
               <div
                 key={index}
