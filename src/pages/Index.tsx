@@ -11,25 +11,25 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const featuredCases = [
     {
-      title: "Transformação Digital no Varejo",
-      category: "Varejo",
+      title: "Sistema de Gestão para ONG",
+      category: "Web App",
       description:
-        "Implementação de estratégia omnichannel que revolucionou a experiência do cliente e aumentou significativamente as vendas online.",
-      results: "Aumento de 150% nas vendas online em 6 meses",
+        "Desenvolvimento de plataforma completa para gestão de voluntários, doações e projetos sociais com dashboards em tempo real.",
+      results: "Aumento de 200% na eficiência operacional",
     },
     {
-      title: "Otimização de Processos Industriais",
-      category: "Indústria",
+      title: "Site Institucional para Startup",
+      category: "Site",
       description:
-        "Redesenho completo dos processos operacionais utilizando metodologia Lean Six Sigma para maximizar eficiência e reduzir custos.",
-      results: "Redução de 40% nos custos operacionais",
+        "Criação de site moderno e responsivo com foco em conversão, SEO otimizado e integração com ferramentas de marketing.",
+      results: "3x mais leads gerados após o lançamento",
     },
     {
-      title: "Estratégia de Expansão Internacional",
-      category: "Tecnologia",
+      title: "Chatbot de Atendimento com IA",
+      category: "Automação IA",
       description:
-        "Planejamento e execução de entrada em novos mercados internacionais, incluindo análise de viabilidade e adaptação cultural.",
-      results: "Expansão bem-sucedida para 5 novos países",
+        "Implementação de assistente virtual inteligente para atendimento 24/7, reduzindo tempo de resposta e custos operacionais.",
+      results: "80% das dúvidas resolvidas automaticamente",
     },
   ];
 

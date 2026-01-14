@@ -2,51 +2,51 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SolutionCard from "@/components/SolutionCard";
 import {
-  LineChart,
-  Target,
-  Users,
-  Lightbulb,
-  Cog,
-  TrendingUp,
+  Globe,
+  Smartphone,
+  Bot,
+  Code,
+  Palette,
+  Zap,
 } from "lucide-react";
 
 const Solutions = () => {
   const solutions = [
     {
-      icon: Target,
-      title: "Estratégia Empresarial",
+      icon: Globe,
+      title: "Sites Institucionais",
       description:
-        "Desenvolvimento de estratégias corporativas alinhadas aos objetivos de negócio, análise de mercado e planejamento de longo prazo.",
+        "Desenvolvimento de sites modernos e responsivos que transmitem a identidade da sua marca e atraem novos clientes.",
     },
     {
-      icon: LineChart,
-      title: "Transformação Digital",
+      icon: Smartphone,
+      title: "Web Apps",
       description:
-        "Implementação de tecnologias disruptivas, automação de processos e criação de experiências digitais inovadoras.",
+        "Criação de aplicações web completas e personalizadas para resolver problemas específicos do seu negócio.",
     },
     {
-      icon: Cog,
-      title: "Otimização de Processos",
+      icon: Bot,
+      title: "Automações com IA",
       description:
-        "Mapeamento, análise e redesenho de processos operacionais para maximizar eficiência e reduzir custos.",
+        "Implementação de soluções inteligentes com inteligência artificial para automatizar processos e aumentar a produtividade.",
     },
     {
-      icon: Users,
-      title: "Gestão de Pessoas",
+      icon: Palette,
+      title: "Landing Pages",
       description:
-        "Desenvolvimento de liderança, gestão de talentos, cultura organizacional e programas de capacitação.",
+        "Páginas de alta conversão otimizadas para campanhas de marketing e captação de leads.",
     },
     {
-      icon: Lightbulb,
-      title: "Inovação e Design Thinking",
+      icon: Code,
+      title: "Sistemas Personalizados",
       description:
-        "Workshops de inovação, prototipagem rápida e implementação de metodologias ágeis para resolução de problemas complexos.",
+        "Desenvolvimento de sistemas sob medida para gestão, controle e automação de processos internos.",
     },
     {
-      icon: TrendingUp,
-      title: "Crescimento e Expansão",
+      icon: Zap,
+      title: "Integrações e APIs",
       description:
-        "Estratégias de crescimento, expansão de mercado, fusões e aquisições, e internacionalização de negócios.",
+        "Conexão entre diferentes sistemas e plataformas para otimizar fluxos de trabalho e centralizar informações.",
     },
   ];
 
@@ -59,12 +59,12 @@ const Solutions = () => {
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
             <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Nossas Soluções
+              Nossos Serviços
             </h1>
             <p className="text-lg md:text-xl text-primary-foreground/90">
-              Oferecemos um portfólio completo de serviços de consultoria
-              estratégica para impulsionar o crescimento e a transformação do
-              seu negócio.
+              Desenvolvemos soluções digitais sob medida para transformar suas
+              ideias em produtos reais. Sites, aplicações web e automações com
+              inteligência artificial.
             </p>
           </div>
         </div>
@@ -92,14 +92,14 @@ const Solutions = () => {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold">
-              Pronto para Transformar seu Negócio?
+              Tem um Projeto em Mente?
             </h2>
             <p className="text-lg text-muted-foreground">
-              Entre em contato conosco e descubra como nossas soluções podem
-              impulsionar seus resultados.
+              Conte-nos sua ideia e transformaremos em realidade. Desenvolvemos
+              soluções com qualidade e preço acessível.
             </p>
             <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
-              Agendar Consultoria Gratuita
+              Solicitar Orçamento Gratuito
             </button>
           </div>
         </div>
