@@ -11,10 +11,10 @@ import {
   Users,
   Mail,
   LayoutDashboard,
-  Eye,
-  Clock,
-  CheckCircle,
-  XCircle,
+  Shield,
+  Crown,
+  UserCog,
+  GraduationCap,
 } from "lucide-react";
 import {
   Table,
@@ -33,6 +33,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
+
 interface Lead {
   id: string;
   name: string;
@@ -44,6 +46,16 @@ interface Lead {
   created_at: string;
 }
 
+interface UserWithRole {
+  user_id: string;
+  role: AppRole;
+  created_at: string;
+  profile?: {
+    full_name: string | null;
+  };
+  email?: string;
+}
+
 const AdminDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -51,8 +63,34 @@ const AdminDashboard = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
   const [leads, setLeads] = useState<Lead[]>([]);
   const [leadsLoading, setLeadsLoading] = useState(false);
+  const [userRole, setUserRole] = useState<AppRole | null>(null);
+  const [allUsers, setAllUsers] = useState<UserWithRole[]>([]);
+  const [usersLoading, setUsersLoading] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+
+  const roleHierarchy: AppRole[] = ["trainee", "membro", "diretor", "presidencia", "admin"];
+  
+  const roleLabels: Record<AppRole, string> = {
+    trainee: "Trainee",
+    membro: "Membro",
+    diretor: "Diretor(a)",
+    presidencia: "Presidência",
+    admin: "Administrador",
+  };
+
+  const roleIcons: Record<AppRole, React.ReactNode> = {
+    trainee: <GraduationCap className="h-4 w-4" />,
+    membro: <UserIcon className="h-4 w-4" />,
+    diretor: <UserCog className="h-4 w-4" />,
+    presidencia: <Crown className="h-4 w-4" />,
+    admin: <Shield className="h-4 w-4" />,
+  };
+
+  const hasMinimumRole = (minRole: AppRole): boolean => {
+    if (!userRole) return false;
+    return roleHierarchy.indexOf(userRole) >= roleHierarchy.indexOf(minRole);
+  };
 
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
@@ -81,10 +119,104 @@ const AdminDashboard = () => {
   }, [navigate]);
 
   useEffect(() => {
+    if (user) {
+      fetchUserRole();
+    }
+  }, [user]);
+
+  useEffect(() => {
     if (user && activeTab === "leads") {
       fetchLeads();
     }
-  }, [user, activeTab]);
+    if (user && activeTab === "usuarios" && hasMinimumRole("admin")) {
+      fetchAllUsers();
+    }
+  }, [user, activeTab, userRole]);
+
+  const fetchUserRole = async () => {
+    if (!user) return;
+    try {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+      setUserRole(data?.role as AppRole || "trainee");
+    } catch (error: any) {
+      console.error("Error fetching role:", error);
+      setUserRole("trainee");
+    }
+  };
+
+  const fetchAllUsers = async () => {
+    setUsersLoading(true);
+    try {
+      const { data: rolesData, error: rolesError } = await supabase
+        .from("user_roles")
+        .select(`
+          user_id,
+          role,
+          created_at
+        `)
+        .order("created_at", { ascending: true });
+
+      if (rolesError) throw rolesError;
+
+      // Fetch profiles for these users
+      const userIds = rolesData?.map(r => r.user_id) || [];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("user_id, full_name")
+        .in("user_id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Combine the data
+      const usersWithRoles: UserWithRole[] = (rolesData || []).map(role => ({
+        ...role,
+        role: role.role as AppRole,
+        profile: profilesData?.find(p => p.user_id === role.user_id) || undefined,
+      }));
+
+      setAllUsers(usersWithRoles);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar usuários",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setUsersLoading(false);
+    }
+  };
+
+  const updateUserRole = async (userId: string, newRole: AppRole) => {
+    try {
+      const { error } = await supabase
+        .from("user_roles")
+        .update({ role: newRole })
+        .eq("user_id", userId);
+
+      if (error) throw error;
+
+      setAllUsers(allUsers.map(u =>
+        u.user_id === userId ? { ...u, role: newRole } : u
+      ));
+
+      toast({
+        title: "Cargo atualizado",
+        description: "O cargo do usuário foi atualizado com sucesso.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao atualizar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
 
   const fetchLeads = async () => {
     setLeadsLoading(true);
@@ -159,27 +291,13 @@ const AdminDashboard = () => {
   }
 
   const menuItems = [
-    { icon: LayoutDashboard, label: "Dashboard", key: "dashboard" },
-    { icon: Mail, label: "Leads", key: "leads" },
-    { icon: Briefcase, label: "Cases", key: "cases" },
-    { icon: Users, label: "Equipe", key: "equipe" },
-    { icon: UserIcon, label: "Perfil", key: "perfil" },
-  ];
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "novo":
-        return <Badge className="bg-blue-500">Novo</Badge>;
-      case "em_contato":
-        return <Badge className="bg-yellow-500">Em Contato</Badge>;
-      case "convertido":
-        return <Badge className="bg-green-500">Convertido</Badge>;
-      case "perdido":
-        return <Badge variant="destructive">Perdido</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
+    { icon: LayoutDashboard, label: "Dashboard", key: "dashboard", minRole: "trainee" as AppRole },
+    { icon: Mail, label: "Leads", key: "leads", minRole: "membro" as AppRole },
+    { icon: Briefcase, label: "Cases", key: "cases", minRole: "membro" as AppRole },
+    { icon: Users, label: "Equipe", key: "equipe", minRole: "diretor" as AppRole },
+    { icon: Shield, label: "Usuários", key: "usuarios", minRole: "admin" as AppRole },
+    { icon: UserIcon, label: "Perfil", key: "perfil", minRole: "trainee" as AppRole },
+  ].filter(item => hasMinimumRole(item.minRole));
 
   const getServiceLabel = (type: string) => {
     const labels: Record<string, string> = {
@@ -205,12 +323,36 @@ const AdminDashboard = () => {
 
   const newLeadsCount = leads.filter(l => l.status === "novo").length;
 
+  const getRoleBadgeColor = (role: AppRole) => {
+    switch (role) {
+      case "admin":
+        return "bg-red-500";
+      case "presidencia":
+        return "bg-purple-500";
+      case "diretor":
+        return "bg-blue-500";
+      case "membro":
+        return "bg-green-500";
+      case "trainee":
+      default:
+        return "bg-gray-500";
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between">
-          <h1 className="text-xl font-bold text-foreground">Painel Administrativo</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-foreground">Painel Administrativo</h1>
+            {userRole && (
+              <Badge className={getRoleBadgeColor(userRole)}>
+                {roleIcons[userRole]}
+                <span className="ml-1">{roleLabels[userRole]}</span>
+              </Badge>
+            )}
+          </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground hidden sm:block">
               {user.email}
@@ -240,7 +382,7 @@ const AdminDashboard = () => {
                 <item.icon className="h-5 w-5" />
                 {item.label}
                 {item.key === "leads" && newLeadsCount > 0 && (
-                  <span className="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
+                  <span className="ml-auto bg-destructive text-destructive-foreground text-xs px-2 py-0.5 rounded-full">
                     {newLeadsCount}
                   </span>
                 )}
@@ -252,7 +394,7 @@ const AdminDashboard = () => {
         {/* Mobile Nav */}
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-card border-t border-border p-2 z-50">
           <div className="flex justify-around">
-            {menuItems.map((item) => (
+            {menuItems.slice(0, 5).map((item) => (
               <button
                 key={item.key}
                 onClick={() => setActiveTab(item.key)}
@@ -301,57 +443,68 @@ const AdminDashboard = () => {
                       <Users className="h-6 w-6 text-accent" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-foreground">0</p>
+                      <p className="text-2xl font-bold text-foreground">{allUsers.length || 0}</p>
                       <p className="text-sm text-muted-foreground">Membros</p>
                     </div>
                   </div>
                 </div>
-                <div className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/50 transition-colors" onClick={() => setActiveTab("leads")}>
-                  <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-highlight/10">
-                      <Mail className="h-6 w-6 text-highlight" />
-                    </div>
-                    <div>
-                      <p className="text-2xl font-bold text-foreground">{leads.length || 0}</p>
-                      <p className="text-sm text-muted-foreground">Leads</p>
+                {hasMinimumRole("membro") && (
+                  <div 
+                    className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/50 transition-colors" 
+                    onClick={() => setActiveTab("leads")}
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-lg bg-highlight/10">
+                        <Mail className="h-6 w-6 text-highlight" />
+                      </div>
+                      <div>
+                        <p className="text-2xl font-bold text-foreground">{leads.length || 0}</p>
+                        <p className="text-sm text-muted-foreground">Leads</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
                 <div className="bg-card rounded-xl border border-border p-6">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-lg bg-green-500/10">
-                      <UserIcon className="h-6 w-6 text-green-500" />
+                    <div className="p-3 rounded-lg bg-primary/10">
+                      <UserIcon className="h-6 w-6 text-primary" />
                     </div>
                     <div>
-                      <p className="text-2xl font-bold text-foreground">1</p>
-                      <p className="text-sm text-muted-foreground">Usuários</p>
+                      <p className="text-2xl font-bold text-foreground">
+                        {userRole ? roleLabels[userRole] : "-"}
+                      </p>
+                      <p className="text-sm text-muted-foreground">Seu Cargo</p>
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Quick Actions */}
-              <div className="bg-card rounded-xl border border-border p-6">
-                <h3 className="text-lg font-semibold text-foreground mb-4">Ações Rápidas</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("cases")}>
-                    <Briefcase className="h-5 w-5" />
-                    Adicionar Case
-                  </Button>
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("equipe")}>
-                    <Users className="h-5 w-5" />
-                    Adicionar Membro
-                  </Button>
-                  <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("leads")}>
-                    <Mail className="h-5 w-5" />
-                    Ver Leads
-                  </Button>
+              {hasMinimumRole("membro") && (
+                <div className="bg-card rounded-xl border border-border p-6">
+                  <h3 className="text-lg font-semibold text-foreground mb-4">Ações Rápidas</h3>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("cases")}>
+                      <Briefcase className="h-5 w-5" />
+                      Adicionar Case
+                    </Button>
+                    {hasMinimumRole("diretor") && (
+                      <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("equipe")}>
+                        <Users className="h-5 w-5" />
+                        Adicionar Membro
+                      </Button>
+                    )}
+                    <Button variant="outline" className="h-auto py-4 flex-col gap-2" onClick={() => setActiveTab("leads")}>
+                      <Mail className="h-5 w-5" />
+                      Ver Leads
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              )}
             </>
           )}
 
-          {activeTab === "leads" && (
+          {activeTab === "leads" && hasMinimumRole("membro") && (
             <>
               <div className="mb-8">
                 <h2 className="text-2xl font-bold text-foreground mb-2">Leads</h2>
@@ -410,6 +563,7 @@ const AdminDashboard = () => {
                             <Select
                               value={lead.status}
                               onValueChange={(value) => updateLeadStatus(lead.id, value)}
+                              disabled={!hasMinimumRole("diretor")}
                             >
                               <SelectTrigger className="w-32">
                                 <SelectValue />
@@ -434,7 +588,151 @@ const AdminDashboard = () => {
             </>
           )}
 
-          {activeTab === "cases" && (
+          {activeTab === "usuarios" && hasMinimumRole("admin") && (
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-foreground mb-2">Gestão de Usuários</h2>
+                <p className="text-muted-foreground">
+                  Gerencie os acessos e cargos dos membros da CASE.
+                </p>
+              </div>
+
+              {usersLoading ? (
+                <div className="flex justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : allUsers.length === 0 ? (
+                <div className="bg-card rounded-xl border border-border p-12 text-center">
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Nenhum usuário</h3>
+                  <p className="text-muted-foreground">
+                    Os usuários cadastrados aparecerão aqui.
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-card rounded-xl border border-border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Cargo</TableHead>
+                        <TableHead className="hidden md:table-cell">Membro desde</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {allUsers.map((u) => (
+                        <TableRow key={u.user_id}>
+                          <TableCell className="font-medium">
+                            {u.profile?.full_name || "Não informado"}
+                          </TableCell>
+                          <TableCell>
+                            <Select
+                              value={u.role}
+                              onValueChange={(value) => updateUserRole(u.user_id, value as AppRole)}
+                              disabled={u.user_id === user?.id}
+                            >
+                              <SelectTrigger className="w-40">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="trainee">
+                                  <div className="flex items-center gap-2">
+                                    <GraduationCap className="h-4 w-4" />
+                                    Trainee
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="membro">
+                                  <div className="flex items-center gap-2">
+                                    <UserIcon className="h-4 w-4" />
+                                    Membro
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="diretor">
+                                  <div className="flex items-center gap-2">
+                                    <UserCog className="h-4 w-4" />
+                                    Diretor(a)
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="presidencia">
+                                  <div className="flex items-center gap-2">
+                                    <Crown className="h-4 w-4" />
+                                    Presidência
+                                  </div>
+                                </SelectItem>
+                                <SelectItem value="admin">
+                                  <div className="flex items-center gap-2">
+                                    <Shield className="h-4 w-4" />
+                                    Administrador
+                                  </div>
+                                </SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell text-muted-foreground text-sm">
+                            {formatDate(u.created_at)}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+
+              {/* Role Legend */}
+              <div className="mt-8 bg-card rounded-xl border border-border p-6">
+                <h3 className="text-lg font-semibold text-foreground mb-4">Níveis de Acesso</h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                  <div className="flex items-start gap-3">
+                    <Badge className="bg-gray-500">
+                      <GraduationCap className="h-3 w-3" />
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">Trainee</p>
+                      <p className="text-xs text-muted-foreground">Apenas visualização do dashboard</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Badge className="bg-green-500">
+                      <UserIcon className="h-3 w-3" />
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">Membro</p>
+                      <p className="text-xs text-muted-foreground">Visualiza leads e cases</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Badge className="bg-blue-500">
+                      <UserCog className="h-3 w-3" />
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">Diretor(a)</p>
+                      <p className="text-xs text-muted-foreground">Gerencia equipe e conteúdo</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Badge className="bg-purple-500">
+                      <Crown className="h-3 w-3" />
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">Presidência</p>
+                      <p className="text-xs text-muted-foreground">Acesso completo exceto usuários</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <Badge className="bg-red-500">
+                      <Shield className="h-3 w-3" />
+                    </Badge>
+                    <div>
+                      <p className="font-medium text-sm">Administrador</p>
+                      <p className="text-xs text-muted-foreground">Controle total do sistema</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+
+          {activeTab === "cases" && hasMinimumRole("membro") && (
             <div className="text-center py-12">
               <Briefcase className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Em Breve</h3>
@@ -444,7 +742,7 @@ const AdminDashboard = () => {
             </div>
           )}
 
-          {activeTab === "equipe" && (
+          {activeTab === "equipe" && hasMinimumRole("diretor") && (
             <div className="text-center py-12">
               <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
               <h3 className="text-lg font-semibold mb-2">Em Breve</h3>
@@ -470,6 +768,17 @@ const AdminDashboard = () => {
                 <div>
                   <p className="text-sm text-muted-foreground">Email</p>
                   <p className="font-medium">{user.email}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-muted-foreground">Cargo</p>
+                  <div className="flex items-center gap-2 mt-1">
+                    {userRole && (
+                      <Badge className={getRoleBadgeColor(userRole)}>
+                        {roleIcons[userRole]}
+                        <span className="ml-1">{roleLabels[userRole]}</span>
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 <div>
                   <p className="text-sm text-muted-foreground">Membro desde</p>

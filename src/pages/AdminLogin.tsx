@@ -8,9 +8,23 @@ import { useToast } from "@/hooks/use-toast";
 import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { z } from "zod";
 
+const ALLOWED_DOMAIN = "@caseej.com";
+
 const loginSchema = z.object({
   email: z.string().trim().email({ message: "Email inválido" }),
   password: z.string().min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+});
+
+const signUpSchema = z.object({
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Email inválido" })
+    .refine((email) => email.endsWith(ALLOWED_DOMAIN), {
+      message: `Apenas emails ${ALLOWED_DOMAIN} são permitidos`,
+    }),
+  password: z.string().min(6, { message: "Senha deve ter no mínimo 6 caracteres" }),
+  fullName: z.string().trim().min(2, { message: "Nome deve ter no mínimo 2 caracteres" }),
 });
 
 const AdminLogin = () => {
@@ -45,19 +59,19 @@ const AdminLogin = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const validation = loginSchema.safeParse({ email, password });
-    if (!validation.success) {
-      toast({
-        title: "Erro de validação",
-        description: validation.error.errors[0].message,
-        variant: "destructive",
-      });
-      setIsLoading(false);
-      return;
-    }
-
     try {
       if (isSignUp) {
+        const validation = signUpSchema.safeParse({ email, password, fullName });
+        if (!validation.success) {
+          toast({
+            title: "Erro de validação",
+            description: validation.error.errors[0].message,
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         const redirectUrl = `${window.location.origin}/admin/dashboard`;
         const { error } = await supabase.auth.signUp({
           email: validation.data.email,
@@ -65,7 +79,7 @@ const AdminLogin = () => {
           options: {
             emailRedirectTo: redirectUrl,
             data: {
-              full_name: fullName,
+              full_name: validation.data.fullName,
             },
           },
         });
@@ -87,6 +101,17 @@ const AdminLogin = () => {
           });
         }
       } else {
+        const validation = loginSchema.safeParse({ email, password });
+        if (!validation.success) {
+          toast({
+            title: "Erro de validação",
+            description: validation.error.errors[0].message,
+            variant: "destructive",
+          });
+          setIsLoading(false);
+          return;
+        }
+
         const { error } = await supabase.auth.signInWithPassword({
           email: validation.data.email,
           password: validation.data.password,
@@ -128,6 +153,11 @@ const AdminLogin = () => {
                 ? "Preencha os dados para criar sua conta" 
                 : "Faça login para acessar o painel"}
             </p>
+            {isSignUp && (
+              <p className="text-xs text-muted-foreground mt-2">
+                Apenas emails <span className="font-medium text-primary">{ALLOWED_DOMAIN}</span> são permitidos
+              </p>
+            )}
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
@@ -147,11 +177,11 @@ const AdminLogin = () => {
             )}
 
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">Email Corporativo</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="seu@email.com"
+                placeholder={isSignUp ? `seu.nome${ALLOWED_DOMAIN}` : "seu@email.com"}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
