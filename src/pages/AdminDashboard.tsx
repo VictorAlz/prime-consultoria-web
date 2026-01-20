@@ -17,6 +17,11 @@ import {
   GraduationCap,
   Settings,
   ExternalLink,
+  Plus,
+  Edit,
+  Trash2,
+  X,
+  Check,
 } from "lucide-react";
 import {
   Table,
@@ -68,6 +73,19 @@ interface PSSettings {
   description: string;
 }
 
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  linkedin_url: string | null;
+  email: string | null;
+  photo_url: string | null;
+  display_order: number;
+  is_active: boolean;
+  created_at: string;
+}
+
 const AdminDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -84,6 +102,17 @@ const AdminDashboard = () => {
     description: "Não há processo seletivo ativo no momento.",
   });
   const [psSaving, setPsSaving] = useState(false);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(false);
+  const [showAddMember, setShowAddMember] = useState(false);
+  const [editingMember, setEditingMember] = useState<TeamMember | null>(null);
+  const [newMember, setNewMember] = useState({
+    name: "",
+    role: "",
+    bio: "",
+    linkedin_url: "",
+    email: "",
+  });
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -151,6 +180,9 @@ const AdminDashboard = () => {
     }
     if (user && activeTab === "configuracoes" && hasMinimumRole("admin")) {
       fetchPSSettings();
+    }
+    if (user && activeTab === "equipe" && hasMinimumRole("diretor")) {
+      fetchTeamMembers();
     }
   }, [user, activeTab, userRole]);
 
@@ -278,6 +310,132 @@ const AdminDashboard = () => {
       });
     } finally {
       setPsSaving(false);
+    }
+  };
+
+  const fetchTeamMembers = async () => {
+    setTeamLoading(true);
+    try {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("*")
+        .order("display_order", { ascending: true });
+
+      if (error) throw error;
+      setTeamMembers(data || []);
+    } catch (error: any) {
+      toast({
+        title: "Erro ao carregar equipe",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setTeamLoading(false);
+    }
+  };
+
+  const addTeamMember = async () => {
+    if (!newMember.name || !newMember.role) {
+      toast({
+        title: "Campos obrigatórios",
+        description: "Nome e cargo são obrigatórios.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      const maxOrder = teamMembers.length > 0 
+        ? Math.max(...teamMembers.map(m => m.display_order)) 
+        : 0;
+
+      const { data, error } = await supabase
+        .from("team_members")
+        .insert({
+          name: newMember.name,
+          role: newMember.role,
+          bio: newMember.bio || null,
+          linkedin_url: newMember.linkedin_url || null,
+          email: newMember.email || null,
+          display_order: maxOrder + 1,
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      setTeamMembers([...teamMembers, data]);
+      setNewMember({ name: "", role: "", bio: "", linkedin_url: "", email: "" });
+      setShowAddMember(false);
+
+      toast({
+        title: "Membro adicionado",
+        description: `${newMember.name} foi adicionado à equipe.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao adicionar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const updateTeamMember = async (member: TeamMember) => {
+    try {
+      const { error } = await supabase
+        .from("team_members")
+        .update({
+          name: member.name,
+          role: member.role,
+          bio: member.bio,
+          linkedin_url: member.linkedin_url,
+          email: member.email,
+          is_active: member.is_active,
+        })
+        .eq("id", member.id);
+
+      if (error) throw error;
+
+      setTeamMembers(teamMembers.map(m => m.id === member.id ? member : m));
+      setEditingMember(null);
+
+      toast({
+        title: "Membro atualizado",
+        description: `${member.name} foi atualizado.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao atualizar",
+        description: error.message,
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteTeamMember = async (id: string, name: string) => {
+    if (!confirm(`Tem certeza que deseja remover ${name}?`)) return;
+
+    try {
+      const { error } = await supabase
+        .from("team_members")
+        .delete()
+        .eq("id", id);
+
+      if (error) throw error;
+
+      setTeamMembers(teamMembers.filter(m => m.id !== id));
+
+      toast({
+        title: "Membro removido",
+        description: `${name} foi removido da equipe.`,
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao remover",
+        description: error.message,
+        variant: "destructive",
+      });
     }
   };
 
@@ -807,13 +965,193 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "equipe" && hasMinimumRole("diretor") && (
-            <div className="text-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Em Breve</h3>
-              <p className="text-muted-foreground">
-                A gestão de equipe será implementada em breve.
-              </p>
-            </div>
+            <>
+              <div className="mb-8 flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-bold text-foreground mb-2">Gestão da Equipe</h2>
+                  <p className="text-muted-foreground">
+                    Gerencie os membros exibidos na página pública da equipe.
+                  </p>
+                </div>
+                <Button onClick={() => setShowAddMember(true)} className="flex items-center gap-2">
+                  <Plus className="h-4 w-4" />
+                  Adicionar Membro
+                </Button>
+              </div>
+
+              {/* Add Member Form */}
+              {showAddMember && (
+                <div className="bg-card rounded-xl border border-border p-6 mb-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold">Novo Membro</h3>
+                    <Button variant="ghost" size="icon" onClick={() => setShowAddMember(false)}>
+                      <X className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="new-name">Nome *</Label>
+                      <Input
+                        id="new-name"
+                        placeholder="Nome completo"
+                        value={newMember.name}
+                        onChange={(e) => setNewMember({ ...newMember, name: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-role">Cargo *</Label>
+                      <Input
+                        id="new-role"
+                        placeholder="Ex: Diretor de Projetos"
+                        value={newMember.role}
+                        onChange={(e) => setNewMember({ ...newMember, role: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-email">Email</Label>
+                      <Input
+                        id="new-email"
+                        type="email"
+                        placeholder="email@caseej.com"
+                        value={newMember.email}
+                        onChange={(e) => setNewMember({ ...newMember, email: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="new-linkedin">LinkedIn</Label>
+                      <Input
+                        id="new-linkedin"
+                        placeholder="https://linkedin.com/in/..."
+                        value={newMember.linkedin_url}
+                        onChange={(e) => setNewMember({ ...newMember, linkedin_url: e.target.value })}
+                      />
+                    </div>
+                    <div className="space-y-2 md:col-span-2">
+                      <Label htmlFor="new-bio">Bio</Label>
+                      <Textarea
+                        id="new-bio"
+                        placeholder="Uma breve descrição..."
+                        value={newMember.bio}
+                        onChange={(e) => setNewMember({ ...newMember, bio: e.target.value })}
+                        rows={2}
+                      />
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-2 mt-4">
+                    <Button variant="outline" onClick={() => setShowAddMember(false)}>
+                      Cancelar
+                    </Button>
+                    <Button onClick={addTeamMember}>
+                      Adicionar
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {teamLoading ? (
+                <div className="flex justify-center py-12">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+              ) : teamMembers.length === 0 ? (
+                <div className="bg-card rounded-xl border border-border p-12 text-center">
+                  <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">Nenhum membro</h3>
+                  <p className="text-muted-foreground">
+                    Adicione membros para exibi-los na página pública.
+                  </p>
+                </div>
+              ) : (
+                <div className="bg-card rounded-xl border border-border overflow-hidden">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Cargo</TableHead>
+                        <TableHead className="hidden md:table-cell">Email</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead className="text-right">Ações</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {teamMembers.map((member) => (
+                        <TableRow key={member.id}>
+                          {editingMember?.id === member.id ? (
+                            <>
+                              <TableCell>
+                                <Input
+                                  value={editingMember.name}
+                                  onChange={(e) => setEditingMember({ ...editingMember, name: e.target.value })}
+                                  className="w-full"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Input
+                                  value={editingMember.role}
+                                  onChange={(e) => setEditingMember({ ...editingMember, role: e.target.value })}
+                                  className="w-full"
+                                />
+                              </TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                <Input
+                                  value={editingMember.email || ""}
+                                  onChange={(e) => setEditingMember({ ...editingMember, email: e.target.value })}
+                                  className="w-full"
+                                />
+                              </TableCell>
+                              <TableCell>
+                                <Switch
+                                  checked={editingMember.is_active}
+                                  onCheckedChange={(checked) => setEditingMember({ ...editingMember, is_active: checked })}
+                                />
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button size="icon" variant="ghost" onClick={() => updateTeamMember(editingMember)}>
+                                    <Check className="h-4 w-4 text-green-500" />
+                                  </Button>
+                                  <Button size="icon" variant="ghost" onClick={() => setEditingMember(null)}>
+                                    <X className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </>
+                          ) : (
+                            <>
+                              <TableCell className="font-medium">{member.name}</TableCell>
+                              <TableCell>{member.role}</TableCell>
+                              <TableCell className="hidden md:table-cell">
+                                {member.email ? (
+                                  <a href={`mailto:${member.email}`} className="text-primary hover:underline">
+                                    {member.email}
+                                  </a>
+                                ) : (
+                                  "-"
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant={member.is_active ? "default" : "secondary"}>
+                                  {member.is_active ? "Ativo" : "Inativo"}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  <Button size="icon" variant="ghost" onClick={() => setEditingMember(member)}>
+                                    <Edit className="h-4 w-4" />
+                                  </Button>
+                                  <Button size="icon" variant="ghost" onClick={() => deleteTeamMember(member.id, member.name)}>
+                                    <Trash2 className="h-4 w-4 text-destructive" />
+                                  </Button>
+                                </div>
+                              </TableCell>
+                            </>
+                          )}
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              )}
+            </>
           )}
 
           {activeTab === "configuracoes" && hasMinimumRole("admin") && (
