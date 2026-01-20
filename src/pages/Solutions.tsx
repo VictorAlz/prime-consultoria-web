@@ -1,6 +1,7 @@
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import SolutionCard from "@/components/SolutionCard";
+import ContactDialog from "@/components/ContactDialog";
 import {
   Globe,
   Smartphone,
@@ -98,9 +99,13 @@ const Solutions = () => {
               Conte-nos sua ideia e transformaremos em realidade. Desenvolvemos
               soluções com qualidade e preço acessível.
             </p>
-            <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
-              Solicitar Orçamento Gratuito
-            </button>
+            <ContactDialog
+              trigger={
+                <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
+                  Solicitar Orçamento Gratuito
+                </button>
+              }
+            />
           </div>
         </div>
       </section>
