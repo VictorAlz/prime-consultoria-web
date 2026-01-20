@@ -33,10 +33,6 @@ const CaseCard = ({ title, category, description, results }: CaseCardProps) => {
           <p className="text-sm text-muted-foreground">{results}</p>
         </div>
 
-        <button className="flex items-center text-primary font-medium hover:text-primary/80 transition-colors group">
-          Ver Case Completo
-          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-        </button>
       </CardContent>
     </Card>
   );
