@@ -1,9 +1,44 @@
+import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import { Card, CardContent } from "@/components/ui/card";
-import { Linkedin, Mail } from "lucide-react";
+import { Linkedin, Mail, AlertCircle, ExternalLink } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
+
+interface PSSettings {
+  active: boolean;
+  form_url: string;
+  description: string;
+}
 
 const Team = () => {
+  const [psSettings, setPsSettings] = useState<PSSettings | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchPSSettings();
+  }, []);
+
+  const fetchPSSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "processo_seletivo")
+        .single();
+
+      if (error) throw error;
+      if (data?.value) {
+        setPsSettings(data.value as unknown as PSSettings);
+      }
+    } catch (error) {
+      console.error("Error fetching PS settings:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const teamMembers = [
     {
       name: "Ryan",
@@ -116,13 +151,35 @@ const Team = () => {
         <div className="container-custom">
           <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
             <h2 className="text-3xl md:text-4xl font-bold">Junte-se ao Nosso Time</h2>
-            <p className="text-lg text-muted-foreground">
-              Estamos sempre em busca de talentos excepcionais. Se você é apaixonado por estratégia e transformação,
-              queremos conhecê-lo.
-            </p>
-            <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
-              Ver Oportunidades
-            </button>
+            
+            {loading ? (
+              <div className="animate-pulse h-20 bg-muted rounded-lg"></div>
+            ) : psSettings?.active ? (
+              <>
+                <p className="text-lg text-muted-foreground">
+                  {psSettings.description || "Estamos com processo seletivo aberto! Se você é apaixonado por tecnologia e transformação, queremos conhecê-lo."}
+                </p>
+                <Button
+                  className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                  onClick={() => window.open(psSettings.form_url, "_blank")}
+                >
+                  Ver Oportunidades
+                  <ExternalLink className="h-5 w-5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <div className="bg-muted/50 border border-border rounded-xl p-6 inline-flex flex-col items-center gap-4">
+                  <div className="flex items-center gap-3 text-muted-foreground">
+                    <AlertCircle className="h-6 w-6" />
+                    <span className="text-lg font-medium">Processo Seletivo Fechado</span>
+                  </div>
+                  <p className="text-muted-foreground max-w-md">
+                    {psSettings?.description || "Não há processo seletivo ativo no momento. Fique atento às nossas redes sociais para saber quando abriremos novas vagas!"}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </section>

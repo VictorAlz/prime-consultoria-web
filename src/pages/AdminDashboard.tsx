@@ -15,6 +15,8 @@ import {
   Crown,
   UserCog,
   GraduationCap,
+  Settings,
+  ExternalLink,
 } from "lucide-react";
 import {
   Table,
@@ -32,6 +34,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 
 type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
 
@@ -56,6 +62,12 @@ interface UserWithRole {
   email?: string;
 }
 
+interface PSSettings {
+  active: boolean;
+  form_url: string;
+  description: string;
+}
+
 const AdminDashboard = () => {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
@@ -66,6 +78,12 @@ const AdminDashboard = () => {
   const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [allUsers, setAllUsers] = useState<UserWithRole[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
+  const [psSettings, setPsSettings] = useState<PSSettings>({
+    active: false,
+    form_url: "",
+    description: "Não há processo seletivo ativo no momento.",
+  });
+  const [psSaving, setPsSaving] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -130,6 +148,9 @@ const AdminDashboard = () => {
     }
     if (user && activeTab === "usuarios" && hasMinimumRole("admin")) {
       fetchAllUsers();
+    }
+    if (user && activeTab === "configuracoes" && hasMinimumRole("admin")) {
+      fetchPSSettings();
     }
   }, [user, activeTab, userRole]);
 
@@ -218,6 +239,48 @@ const AdminDashboard = () => {
     }
   };
 
+  const fetchPSSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("site_settings")
+        .select("value")
+        .eq("key", "processo_seletivo")
+        .single();
+
+      if (error) throw error;
+      if (data?.value) {
+        setPsSettings(data.value as unknown as PSSettings);
+      }
+    } catch (error: any) {
+      console.error("Error fetching PS settings:", error);
+    }
+  };
+
+  const savePSSettings = async () => {
+    setPsSaving(true);
+    try {
+      const { error } = await supabase
+        .from("site_settings")
+        .update({ value: JSON.parse(JSON.stringify(psSettings)) })
+        .eq("key", "processo_seletivo");
+
+      if (error) throw error;
+
+      toast({
+        title: "Configurações salvas",
+        description: "As configurações do processo seletivo foram atualizadas.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Erro ao salvar",
+        description: error.message,
+        variant: "destructive",
+      });
+    } finally {
+      setPsSaving(false);
+    }
+  };
+
   const fetchLeads = async () => {
     setLeadsLoading(true);
     try {
@@ -296,6 +359,7 @@ const AdminDashboard = () => {
     { icon: Briefcase, label: "Cases", key: "cases", minRole: "membro" as AppRole },
     { icon: Users, label: "Equipe", key: "equipe", minRole: "diretor" as AppRole },
     { icon: Shield, label: "Usuários", key: "usuarios", minRole: "admin" as AppRole },
+    { icon: Settings, label: "Configurações", key: "configuracoes", minRole: "admin" as AppRole },
     { icon: UserIcon, label: "Perfil", key: "perfil", minRole: "trainee" as AppRole },
   ].filter(item => hasMinimumRole(item.minRole));
 
@@ -750,6 +814,88 @@ const AdminDashboard = () => {
                 A gestão de equipe será implementada em breve.
               </p>
             </div>
+          )}
+
+          {activeTab === "configuracoes" && hasMinimumRole("admin") && (
+            <>
+              <div className="mb-8">
+                <h2 className="text-2xl font-bold text-foreground mb-2">Configurações do Site</h2>
+                <p className="text-muted-foreground">
+                  Gerencie as configurações públicas do site.
+                </p>
+              </div>
+
+              <div className="bg-card rounded-xl border border-border p-6 max-w-2xl">
+                <h3 className="text-lg font-semibold text-foreground mb-6 flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Processo Seletivo
+                </h3>
+
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <div className="space-y-0.5">
+                      <Label htmlFor="ps-active" className="text-base font-medium">
+                        Processo Seletivo Ativo
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        Quando ativo, o botão "Ver Oportunidades" aparece na página da equipe.
+                      </p>
+                    </div>
+                    <Switch
+                      id="ps-active"
+                      checked={psSettings.active}
+                      onCheckedChange={(checked) =>
+                        setPsSettings({ ...psSettings, active: checked })
+                      }
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ps-url">Link do Formulário (Google Forms)</Label>
+                    <div className="flex gap-2">
+                      <Input
+                        id="ps-url"
+                        type="url"
+                        placeholder="https://forms.google.com/..."
+                        value={psSettings.form_url}
+                        onChange={(e) =>
+                          setPsSettings({ ...psSettings, form_url: e.target.value })
+                        }
+                      />
+                      {psSettings.form_url && (
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => window.open(psSettings.form_url, "_blank")}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="ps-description">Mensagem para visitantes</Label>
+                    <Textarea
+                      id="ps-description"
+                      placeholder="Descreva o processo seletivo ou informe que não há vagas no momento..."
+                      value={psSettings.description}
+                      onChange={(e) =>
+                        setPsSettings({ ...psSettings, description: e.target.value })
+                      }
+                      rows={3}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      Esta mensagem aparece na página da equipe, tanto quando o PS está ativo quanto fechado.
+                    </p>
+                  </div>
+
+                  <Button onClick={savePSSettings} disabled={psSaving} className="w-full">
+                    {psSaving ? "Salvando..." : "Salvar Configurações"}
+                  </Button>
+                </div>
+              </div>
+            </>
           )}
 
           {activeTab === "perfil" && (
