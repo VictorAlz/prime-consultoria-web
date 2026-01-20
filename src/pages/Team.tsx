@@ -12,12 +12,26 @@ interface PSSettings {
   description: string;
 }
 
+interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string | null;
+  linkedin_url: string | null;
+  email: string | null;
+  photo_url: string | null;
+  display_order: number;
+}
+
 const Team = () => {
   const [psSettings, setPsSettings] = useState<PSSettings | null>(null);
   const [loading, setLoading] = useState(true);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
+  const [teamLoading, setTeamLoading] = useState(true);
 
   useEffect(() => {
     fetchPSSettings();
+    fetchTeamMembers();
   }, []);
 
   const fetchPSSettings = async () => {
@@ -39,43 +53,22 @@ const Team = () => {
     }
   };
 
-  const teamMembers = [
-    {
-      name: "Ryan",
-      role: "Diretor Presidente",
-      bio: "",
-    },
-    {
-      name: "Victor",
-      role: "Diretor de Projetos",
-      bio: "",
-    },
-    {
-      name: "Kauan",
-      role: "Diretor de Gente e Gestão",
-      bio: "",
-    },
-    {
-      name: "Vitoria",
-      role: "Assessora de Presidência",
-      bio: "",
-    },
-    {
-      name: "Rafael",
-      role: "Assessor de Projetos",
-      bio: "",
-    },
-    {
-      name: "Robert",
-      role: "Assessor de Projetos",
-      bio: "",
-    },
-    {
-      name: "Nathan",
-      role: "Assessor de Projetos",
-      bio: "",
-    },
-  ];
+  const fetchTeamMembers = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("team_members")
+        .select("*")
+        .eq("is_active", true)
+        .order("display_order", { ascending: true });
+
+      if (error) throw error;
+      setTeamMembers(data || []);
+    } catch (error) {
+      console.error("Error fetching team members:", error);
+    } finally {
+      setTeamLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen">
@@ -96,53 +89,88 @@ const Team = () => {
       {/* Team Grid */}
       <section className="section-padding">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {teamMembers.map((member, index) => (
-              <Card
-                key={index}
-                className="overflow-hidden border-border hover:border-primary/50 transition-all duration-300 card-hover animate-fade-in"
-                style={{ animationDelay: `${index * 100}ms` }}
-              >
-                {/* Photo Placeholder */}
-                <div className="aspect-square bg-gradient-to-br from-primary/20 via-accent/20 to-highlight/20 relative">
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center">
-                      <span className="text-4xl font-bold text-primary">
-                        {member.name
-                          .split(" ")
-                          .map((n) => n[0])
-                          .join("")}
-                      </span>
-                    </div>
+          {teamLoading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-square bg-muted rounded-t-lg"></div>
+                  <div className="p-6 space-y-4 bg-card rounded-b-lg border border-border">
+                    <div className="h-6 bg-muted rounded w-2/3"></div>
+                    <div className="h-4 bg-muted rounded w-1/2"></div>
                   </div>
                 </div>
-
-                <CardContent className="p-6 space-y-4">
-                  <div>
-                    <h3 className="text-2xl font-bold">{member.name}</h3>
-                    <p className="text-highlight font-medium">{member.role}</p>
+              ))}
+            </div>
+          ) : teamMembers.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">Nenhum membro da equipe cadastrado.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {teamMembers.map((member, index) => (
+                <Card
+                  key={member.id}
+                  className="overflow-hidden border-border hover:border-primary/50 transition-all duration-300 card-hover animate-fade-in"
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  {/* Photo */}
+                  <div className="aspect-square bg-gradient-to-br from-primary/20 via-accent/20 to-highlight/20 relative">
+                    {member.photo_url ? (
+                      <img
+                        src={member.photo_url}
+                        alt={member.name}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <div className="w-32 h-32 rounded-full bg-primary/20 flex items-center justify-center">
+                          <span className="text-4xl font-bold text-primary">
+                            {member.name
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")
+                              .slice(0, 2)}
+                          </span>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <p className="text-muted-foreground">{member.bio}</p>
 
-                  {/* Social Links */}
-                  <div className="flex space-x-3 pt-2">
-                    <button
-                      className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors flex items-center justify-center"
-                      aria-label="LinkedIn"
-                    >
-                      <Linkedin className="h-5 w-5 text-primary" />
-                    </button>
-                    <button
-                      className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors flex items-center justify-center"
-                      aria-label="Email"
-                    >
-                      <Mail className="h-5 w-5 text-primary" />
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+                  <CardContent className="p-6 space-y-4">
+                    <div>
+                      <h3 className="text-2xl font-bold">{member.name}</h3>
+                      <p className="text-highlight font-medium">{member.role}</p>
+                    </div>
+                    {member.bio && <p className="text-muted-foreground">{member.bio}</p>}
+
+                    {/* Social Links */}
+                    <div className="flex space-x-3 pt-2">
+                      {member.linkedin_url && (
+                        <a
+                          href={member.linkedin_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors flex items-center justify-center"
+                          aria-label="LinkedIn"
+                        >
+                          <Linkedin className="h-5 w-5 text-primary" />
+                        </a>
+                      )}
+                      {member.email && (
+                        <a
+                          href={`mailto:${member.email}`}
+                          className="w-10 h-10 rounded-full bg-primary/10 hover:bg-primary/20 transition-colors flex items-center justify-center"
+                          aria-label="Email"
+                        >
+                          <Mail className="h-5 w-5 text-primary" />
+                        </a>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
