@@ -49,13 +49,13 @@ const Header = () => {
           {/* Logo */}
           <Link 
             to="/" 
-            className="flex items-center"
+            className="flex items-center flex-shrink-0 -my-2"
             onClick={() => window.scrollTo(0, 0)}
           >
             <img 
               src={logo} 
               alt="CASE - Empresa Júnior" 
-              className="h-16 md:h-20 w-auto"
+              className="h-14 md:h-16 w-auto object-contain"
             />
           </Link>
 
