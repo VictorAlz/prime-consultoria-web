@@ -27,12 +27,12 @@ const ClientCarousel = () => {
             {duplicatedClients.map((client, index) => (
               <div
                 key={index}
-                className="flex-shrink-0 w-48 h-24 mx-4 flex items-center justify-center bg-slate-800 rounded-lg shadow-sm hover:shadow-md transition-shadow p-4"
+                className="flex-shrink-0 w-48 h-24 mx-4 flex items-center justify-center p-4"
               >
                 <img
                   src={client.logo}
                   alt={`Logo ${client.name}`}
-                  className="max-w-full max-h-full object-contain"
+                  className="max-w-full max-h-full object-contain drop-shadow-md"
                 />
               </div>
             ))}
