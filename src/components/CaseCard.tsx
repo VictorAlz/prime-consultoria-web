@@ -10,10 +10,18 @@ interface CaseCardProps {
   image?: string;
 }
 
-const CaseCard = ({ title, category, description, results }: CaseCardProps) => {
+const CaseCard = ({ title, category, description, results, image }: CaseCardProps) => {
   return (
     <Card className="group overflow-hidden border-border hover:border-primary/50 transition-all duration-300 card-hover">
       <div className="aspect-video bg-gradient-to-br from-primary/20 to-accent/20 relative overflow-hidden">
+        {image && (
+          <img
+            src={image}
+            alt={title}
+            loading="lazy"
+            className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
         <Badge className="absolute top-4 left-4 bg-highlight text-highlight-foreground">
           {category}
