@@ -22,6 +22,7 @@ import {
   Trash2,
   X,
   Check,
+  ListChecks,
 } from "lucide-react";
 import {
   Table,
@@ -43,6 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import TasksPanel from "@/components/admin/TasksPanel";
 
 type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
 
@@ -514,6 +516,7 @@ const AdminDashboard = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Dashboard", key: "dashboard", minRole: "trainee" as AppRole },
     { icon: Mail, label: "Leads", key: "leads", minRole: "membro" as AppRole },
+    { icon: ListChecks, label: "Tarefas", key: "tarefas", minRole: "trainee" as AppRole },
     { icon: Briefcase, label: "Cases", key: "cases", minRole: "membro" as AppRole },
     { icon: Users, label: "Equipe", key: "equipe", minRole: "diretor" as AppRole },
     { icon: Shield, label: "Usuários", key: "usuarios", minRole: "admin" as AppRole },
@@ -962,6 +965,10 @@ const AdminDashboard = () => {
                 A gestão de cases será implementada em breve.
               </p>
             </div>
+          )}
+
+          {activeTab === "tarefas" && user && (
+            <TasksPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
           )}
 
           {activeTab === "equipe" && hasMinimumRole("diretor") && (
