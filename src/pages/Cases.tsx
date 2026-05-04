@@ -7,50 +7,22 @@ import { Button } from "@/components/ui/button";
 const Cases = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-  const categories = ["Todos", "Varejo", "Indústria", "Tecnologia", "Financeiro", "Saúde"];
+  const categories = ["Todos", "Web App", "Logística", "Site", "Automação IA"];
 
   const allCases = [
     {
-      title: "Transformação Digital no Varejo",
-      category: "Varejo",
+      title: "Plataforma Educacional Petróleo Verde",
+      category: "Web App",
       description:
-        "Implementação de estratégia omnichannel que revolucionou a experiência do cliente e aumentou significativamente as vendas online.",
-      results: "Aumento de 150% nas vendas online em 6 meses",
+        "Desenvolvimento de plataforma educacional focada na capacitação profissional no setor de óleo e gás, com trilhas de aprendizado, certificações e acompanhamento de progresso dos alunos.",
+      results: "Mais de 1.500 profissionais capacitados em 8 meses",
     },
     {
-      title: "Otimização de Processos Industriais",
-      category: "Indústria",
+      title: "Sistema de Conferência de Containers",
+      category: "Logística",
       description:
-        "Redesenho completo dos processos operacionais utilizando metodologia Lean Six Sigma para maximizar eficiência e reduzir custos.",
-      results: "Redução de 40% nos custos operacionais",
-    },
-    {
-      title: "Estratégia de Expansão Internacional",
-      category: "Tecnologia",
-      description:
-        "Planejamento e execução de entrada em novos mercados internacionais, incluindo análise de viabilidade e adaptação cultural.",
-      results: "Expansão bem-sucedida para 5 novos países",
-    },
-    {
-      title: "Modernização Bancária Digital",
-      category: "Financeiro",
-      description:
-        "Transformação completa da experiência digital, implementação de open banking e desenvolvimento de novos produtos financeiros.",
-      results: "95% de satisfação dos clientes digitais",
-    },
-    {
-      title: "Sistema de Gestão Hospitalar",
-      category: "Saúde",
-      description:
-        "Implementação de plataforma integrada para gestão de pacientes, prontuários eletrônicos e otimização de recursos hospitalares.",
-      results: "Redução de 30% no tempo de atendimento",
-    },
-    {
-      title: "E-commerce de Nova Geração",
-      category: "Varejo",
-      description:
-        "Criação de plataforma de e-commerce com IA para recomendações personalizadas e experiência de compra diferenciada.",
-      results: "Aumento de 200% na taxa de conversão",
+        "Sistema inteligente para conferência e rastreamento de containers em operações logísticas, automatizando o controle de cargas, reduzindo erros e otimizando o fluxo portuário.",
+      results: "Redução de 70% no tempo de conferência por container",
     },
   ];
 
