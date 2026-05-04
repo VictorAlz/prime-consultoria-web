@@ -11,18 +11,18 @@ import { Link } from "react-router-dom";
 const Index = () => {
   const featuredCases = [
     {
-      title: "Sistema de Gestão para ONG",
+      title: "Plataforma Educacional Petróleo Verde",
       category: "Web App",
       description:
-        "Desenvolvimento de plataforma completa para gestão de voluntários, doações e projetos sociais com dashboards em tempo real.",
-      results: "Aumento de 200% na eficiência operacional",
+        "Desenvolvimento de plataforma educacional focada na capacitação profissional no setor de óleo e gás, com trilhas de aprendizado, certificações e acompanhamento de progresso dos alunos.",
+      results: "Mais de 1.500 profissionais capacitados em 8 meses",
     },
     {
-      title: "Site Institucional para Startup",
-      category: "Site",
+      title: "Sistema de Conferência de Containers",
+      category: "Logística",
       description:
-        "Criação de site moderno e responsivo com foco em conversão, SEO otimizado e integração com ferramentas de marketing.",
-      results: "3x mais leads gerados após o lançamento",
+        "Sistema inteligente para conferência e rastreamento de containers em operações logísticas, automatizando o controle de cargas, reduzindo erros e otimizando o fluxo portuário.",
+      results: "Redução de 70% no tempo de conferência por container",
     },
     {
       title: "Chatbot de Atendimento com IA",
