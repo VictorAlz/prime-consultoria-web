@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 const Cases = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
 
-  const categories = ["Todos", "Web App", "Logística", "Site", "Automação IA"];
+  const categories = ["Todos", "Web App", "Logística", "Site", "Automação IA", "Dados"];
 
   const allCases = [
     {
@@ -23,6 +23,27 @@ const Cases = () => {
       description:
         "Sistema inteligente para conferência e rastreamento de containers em operações logísticas, automatizando o controle de cargas, reduzindo erros e otimizando o fluxo portuário.",
       results: "Redução de 70% no tempo de conferência por container",
+    },
+    {
+      title: "Chatbot de Atendimento Inteligente",
+      category: "Automação IA",
+      description:
+        "Desenvolvimento de chatbot com IA generativa integrado ao WhatsApp e site institucional, capaz de tirar dúvidas, qualificar leads e encaminhar atendimentos complexos para o time humano.",
+      results: "85% das interações resolvidas sem intervenção humana",
+    },
+    {
+      title: "Dashboard de BI para Tomada de Decisão",
+      category: "Dados",
+      description:
+        "Criação de painel de Business Intelligence centralizando dados de vendas, marketing e operações em tempo real, com indicadores customizados e alertas automáticos para a diretoria.",
+      results: "Decisões estratégicas 3x mais rápidas com dados unificados",
+    },
+    {
+      title: "Sistema de Gestão para Oficina Mecânica",
+      category: "Site",
+      description:
+        "Plataforma web completa para oficina mecânica, com agendamento online, controle de ordens de serviço, histórico de veículos por cliente e emissão automática de orçamentos.",
+      results: "Aumento de 60% no número de agendamentos mensais",
     },
   ];
 
