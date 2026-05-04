@@ -7,6 +7,9 @@ import CaseCard from "@/components/CaseCard";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
+import casePetroleoVerde from "@/assets/cases/case-petroleo-verde.jpg";
+import caseContainers from "@/assets/cases/case-containers.jpg";
+import caseChatbot from "@/assets/cases/case-chatbot.jpg";
 
 const Index = () => {
   const featuredCases = [
@@ -16,6 +19,7 @@ const Index = () => {
       description:
         "Desenvolvimento de plataforma educacional focada na capacitação profissional no setor de óleo e gás, com trilhas de aprendizado, certificações e acompanhamento de progresso dos alunos.",
       results: "Mais de 1.500 profissionais capacitados em 8 meses",
+      image: casePetroleoVerde,
     },
     {
       title: "Sistema de Conferência de Containers",
@@ -23,6 +27,7 @@ const Index = () => {
       description:
         "Sistema inteligente para conferência e rastreamento de containers em operações logísticas, automatizando o controle de cargas, reduzindo erros e otimizando o fluxo portuário.",
       results: "Redução de 70% no tempo de conferência por container",
+      image: caseContainers,
     },
     {
       title: "Chatbot de Atendimento com IA",
@@ -30,6 +35,7 @@ const Index = () => {
       description:
         "Implementação de assistente virtual inteligente para atendimento 24/7, reduzindo tempo de resposta e custos operacionais.",
       results: "80% das dúvidas resolvidas automaticamente",
+      image: caseChatbot,
     },
   ];
 

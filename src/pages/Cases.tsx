@@ -3,6 +3,11 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import CaseCard from "@/components/CaseCard";
 import { Button } from "@/components/ui/button";
+import casePetroleoVerde from "@/assets/cases/case-petroleo-verde.jpg";
+import caseContainers from "@/assets/cases/case-containers.jpg";
+import caseChatbot from "@/assets/cases/case-chatbot.jpg";
+import caseDados from "@/assets/cases/case-dados.jpg";
+import caseOficina from "@/assets/cases/case-oficina.jpg";
 
 const Cases = () => {
   const [selectedCategory, setSelectedCategory] = useState("Todos");
@@ -16,6 +21,7 @@ const Cases = () => {
       description:
         "Desenvolvimento de plataforma educacional focada na capacitação profissional no setor de óleo e gás, com trilhas de aprendizado, certificações e acompanhamento de progresso dos alunos.",
       results: "Mais de 1.500 profissionais capacitados em 8 meses",
+      image: casePetroleoVerde,
     },
     {
       title: "Sistema de Conferência de Containers",
@@ -23,6 +29,7 @@ const Cases = () => {
       description:
         "Sistema inteligente para conferência e rastreamento de containers em operações logísticas, automatizando o controle de cargas, reduzindo erros e otimizando o fluxo portuário.",
       results: "Redução de 70% no tempo de conferência por container",
+      image: caseContainers,
     },
     {
       title: "Chatbot de Atendimento Inteligente",
@@ -30,6 +37,7 @@ const Cases = () => {
       description:
         "Desenvolvimento de chatbot com IA generativa integrado ao WhatsApp e site institucional, capaz de tirar dúvidas, qualificar leads e encaminhar atendimentos complexos para o time humano.",
       results: "85% das interações resolvidas sem intervenção humana",
+      image: caseChatbot,
     },
     {
       title: "Dashboard de BI para Tomada de Decisão",
@@ -37,6 +45,7 @@ const Cases = () => {
       description:
         "Criação de painel de Business Intelligence centralizando dados de vendas, marketing e operações em tempo real, com indicadores customizados e alertas automáticos para a diretoria.",
       results: "Decisões estratégicas 3x mais rápidas com dados unificados",
+      image: caseDados,
     },
     {
       title: "Sistema de Gestão para Oficina Mecânica",
@@ -44,6 +53,7 @@ const Cases = () => {
       description:
         "Plataforma web completa para oficina mecânica, com agendamento online, controle de ordens de serviço, histórico de veículos por cliente e emissão automática de orçamentos.",
       results: "Aumento de 60% no número de agendamentos mensais",
+      image: caseOficina,
     },
   ];
 
