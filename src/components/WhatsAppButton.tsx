@@ -1,12 +1,12 @@
 import { MessageCircle } from "lucide-react";
 
 const WhatsAppButton = () => {
-  const phone = "5522999443322";
+  const phone = "5522999443332";
   const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a CaseEJ.");
 
   return (
     <a
-      href={`https://wa.me/${phone}?text=${message}`}
+      href={`https://api.whatsapp.com/send?phone=${phone}&text=${message}`}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Falar no WhatsApp"
