@@ -967,6 +967,10 @@ const AdminDashboard = () => {
             </div>
           )}
 
+          {activeTab === "tarefas" && user && (
+            <TasksPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+          )}
+
           {activeTab === "equipe" && hasMinimumRole("diretor") && (
             <>
               <div className="mb-8 flex items-center justify-between">
