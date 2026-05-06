@@ -990,7 +990,11 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "portfolio" && user && (
-            <PortfolioHealthPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+            <PortfolioHealthPanel
+              currentUserId={user.id}
+              isAdmin={hasMinimumRole("admin")}
+              canDelegate={hasMinimumRole("admin") || projectRoleAllowsDelegation}
+            />
           )}
 
           {activeTab === "wiki" && user && (
