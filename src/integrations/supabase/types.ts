@@ -80,6 +80,47 @@ export type Database = {
         }
         Relationships: []
       }
+      project_assignments: {
+        Row: {
+          created_at: string
+          id: string
+          notes: string | null
+          performance_score: number
+          project_id: string
+          role_in_project: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          performance_score?: number
+          project_id: string
+          role_in_project?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          notes?: string | null
+          performance_score?: number
+          project_id?: string
+          role_in_project?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "project_assignments_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       project_invites: {
         Row: {
           assign_role: Database["public"]["Enums"]["app_role"]
@@ -122,6 +163,39 @@ export type Database = {
           updated_at?: string
           used_at?: string | null
           used_by?: string | null
+        }
+        Relationships: []
+      }
+      projects: {
+        Row: {
+          created_at: string
+          created_by: string
+          description: string | null
+          health: Database["public"]["Enums"]["project_health"]
+          id: string
+          name: string
+          notes: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          description?: string | null
+          health?: Database["public"]["Enums"]["project_health"]
+          id?: string
+          name: string
+          notes?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          health?: Database["public"]["Enums"]["project_health"]
+          id?: string
+          name?: string
+          notes?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -254,6 +328,39 @@ export type Database = {
         }
         Relationships: []
       }
+      wiki_articles: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_pinned: boolean
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          category?: string
+          content: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_pinned?: boolean
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_pinned?: boolean
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -276,6 +383,7 @@ export type Database = {
     }
     Enums: {
       app_role: "trainee" | "membro" | "diretor" | "presidencia" | "admin"
+      project_health: "verde" | "amarelo" | "vermelho"
       task_priority: "baixa" | "media" | "alta"
       task_status: "a_fazer" | "em_andamento" | "concluida"
     }
@@ -406,6 +514,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["trainee", "membro", "diretor", "presidencia", "admin"],
+      project_health: ["verde", "amarelo", "vermelho"],
       task_priority: ["baixa", "media", "alta"],
       task_status: ["a_fazer", "em_andamento", "concluida"],
     },

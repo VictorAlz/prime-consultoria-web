@@ -9,6 +9,18 @@ import {
 } from "@/components/ui/table";
 import { useToast } from "@/hooks/use-toast";
 import { Copy, Link2, MessageCircle, Plus, Trash2, Users, X, Edit, Check } from "lucide-react";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+
+const HUB_ROLES = [
+  "Diretor de Projetos",
+  "Coordenador de Projetos",
+  "Delivery Manager",
+  "UI/UX Designer",
+  "Analista de Projetos",
+  "Desenvolvedor",
+];
 
 interface Invite {
   id: string;
@@ -178,11 +190,12 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-muted/30 rounded-lg">
               <div className="space-y-2">
                 <Label>Cargo no Hub *</Label>
-                <Input
-                  placeholder="Ex: Desenvolvedor Frontend"
-                  value={newCargo}
-                  onChange={(e) => setNewCargo(e.target.value)}
-                />
+                <Select value={newCargo} onValueChange={setNewCargo}>
+                  <SelectTrigger><SelectValue placeholder="Selecione o cargo" /></SelectTrigger>
+                  <SelectContent>
+                    {HUB_ROLES.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-2">
                 <Label>Email (opcional)</Label>
@@ -284,11 +297,12 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
                     <TableCell className="font-medium">{m.full_name || "Sem nome"}</TableCell>
                     <TableCell>
                       {editingId === m.user_id ? (
-                        <Input
-                          value={editingCargo}
-                          onChange={(e) => setEditingCargo(e.target.value)}
-                          placeholder="Ex: Designer"
-                        />
+                        <Select value={editingCargo} onValueChange={setEditingCargo}>
+                          <SelectTrigger className="h-8"><SelectValue placeholder="Selecione" /></SelectTrigger>
+                          <SelectContent>
+                            {HUB_ROLES.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+                          </SelectContent>
+                        </Select>
                       ) : (
                         m.project_role || <span className="text-muted-foreground italic">não definido</span>
                       )}
