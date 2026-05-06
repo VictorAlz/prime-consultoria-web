@@ -381,6 +381,7 @@ export type Database = {
     }
     Functions: {
       can_delegate: { Args: { _user_id: string }; Returns: boolean }
+      can_invite: { Args: { _user_id: string }; Returns: boolean }
       has_minimum_role: {
         Args: {
           _min_role: Database["public"]["Enums"]["app_role"]
