@@ -23,6 +23,7 @@ import {
   X,
   Check,
   ListChecks,
+  UserSquare2,
 } from "lucide-react";
 import {
   Table,
@@ -585,6 +586,10 @@ const AdminDashboard = () => {
             <span className="text-sm text-muted-foreground hidden sm:block">
               {user.email}
             </span>
+            <Button variant="outline" size="sm" onClick={() => navigate("/membro")}>
+              <UserSquare2 className="h-4 w-4 mr-2" />
+              Painel de Membro
+            </Button>
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />
               Sair
