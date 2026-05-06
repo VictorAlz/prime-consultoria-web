@@ -177,6 +177,20 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     setTasks(tasks.map((t) => (t.id === task.id ? { ...t, status, completed_at } : t)));
   };
 
+  const updateAssignee = async (task: Task, assigned_to: string | null) => {
+    const { error } = await supabase
+      .from("tasks")
+      .update({ assigned_to })
+      .eq("id", task.id);
+    if (error) {
+      toast({ title: "Erro ao atualizar responsável", description: error.message, variant: "destructive" });
+      return;
+    }
+    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, assigned_to } : t)));
+    if (openTask?.id === task.id) setOpenTask({ ...task, assigned_to });
+    toast({ title: "Responsável atualizado" });
+  };
+
   const toggleComplete = (task: Task) => {
     updateStatus(task, task.status === "concluida" ? "a_fazer" : "concluida");
   };
