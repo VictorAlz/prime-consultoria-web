@@ -985,11 +985,20 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "tarefas" && user && (
-            <TasksPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+            <TasksPanel
+              currentUserId={user.id}
+              canManage={hasMinimumRole("admin") || projectRoleAllowsDelegation}
+            />
           )}
 
           {activeTab === "hub" && user && (
-            <ProjectsHubPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+          <ProjectsHubPanel
+            currentUserId={user.id}
+            canManage={
+              hasMinimumRole("admin") ||
+              (!!projectRole && ["Diretor de Projetos", "Coordenador de Projetos"].includes(projectRole))
+            }
+          />
           )}
 
           {activeTab === "portfolio" && user && (
