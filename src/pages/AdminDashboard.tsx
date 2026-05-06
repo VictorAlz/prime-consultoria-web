@@ -51,6 +51,7 @@ import TasksPanel from "@/components/admin/TasksPanel";
 import ProjectsHubPanel from "@/components/admin/ProjectsHubPanel";
 import PortfolioHealthPanel from "@/components/admin/PortfolioHealthPanel";
 import KnowledgeBasePanel from "@/components/admin/KnowledgeBasePanel";
+import ProfileEditor from "@/components/admin/ProfileEditor";
 
 type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
 
@@ -1294,14 +1295,7 @@ const AdminDashboard = () => {
                 </p>
               </div>
               <div className="bg-card rounded-xl border border-border p-6 space-y-4">
-                <div>
-                  <p className="text-sm text-muted-foreground">Nome</p>
-                  <p className="font-medium">{user.user_metadata?.full_name || "Não informado"}</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">Email</p>
-                  <p className="font-medium">{user.email}</p>
-                </div>
+                <ProfileEditor user={user} />
                 <div>
                   <p className="text-sm text-muted-foreground">Cargo</p>
                   <div className="flex items-center gap-2 mt-1">
