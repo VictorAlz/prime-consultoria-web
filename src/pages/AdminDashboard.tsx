@@ -201,14 +201,9 @@ const AdminDashboard = () => {
       if (error) throw error;
       const role = (data?.role as AppRole) || "trainee";
       setUserRole(role);
-      // Members without management permissions go to the member panel
-      if (!["diretor", "presidencia", "admin"].includes(role)) {
-        navigate("/membro");
-      }
     } catch (error: any) {
       console.error("Error fetching role:", error);
       setUserRole("trainee");
-      navigate("/membro");
     }
   };
 
