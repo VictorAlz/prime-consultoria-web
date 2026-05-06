@@ -41,19 +41,33 @@ const AdminLogin = () => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
         if (session?.user) {
-          navigate("/admin/dashboard");
+          routeByRole(session.user.id);
         }
       }
     );
 
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
-        navigate("/admin/dashboard");
+        routeByRole(session.user.id);
       }
     });
 
     return () => subscription.unsubscribe();
   }, [navigate]);
+
+  const routeByRole = async (userId: string) => {
+    const { data } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const role = data?.role || "trainee";
+    if (["diretor", "presidencia", "admin"].includes(role)) {
+      navigate("/admin/dashboard");
+    } else {
+      navigate("/membro");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

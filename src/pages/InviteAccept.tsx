@@ -62,7 +62,13 @@ const InviteAccept = () => {
         .eq("user_id", user.id);
 
       toast({ title: "Convite aceito!", description: `Bem-vindo ao Hub como ${invite.cargo}.` });
-      navigate("/admin/dashboard");
+      const { data: roleData } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      const role = roleData?.role || "trainee";
+      navigate(["diretor", "presidencia", "admin"].includes(role) ? "/admin/dashboard" : "/membro");
     } catch (e: any) {
       toast({ title: "Erro ao aceitar", description: e.message, variant: "destructive" });
     } finally {
