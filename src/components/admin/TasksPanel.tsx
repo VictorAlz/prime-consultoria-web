@@ -89,6 +89,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openTask, setOpenTask] = useState<Task | null>(null);
   const [extraAssignees, setExtraAssignees] = useState<string[]>([]);
+  const [allExtras, setAllExtras] = useState<Record<string, string[]>>({});
   const [addAssigneeId, setAddAssigneeId] = useState<string>("");
   const [newTask, setNewTask] = useState({
     title: "",
@@ -103,6 +104,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     fetchTasks();
     fetchMembers();
     fetchProjects();
+    fetchAllExtras();
   }, [canManage]);
 
   useEffect(() => {
@@ -145,6 +147,16 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       .select("id, name")
       .order("name");
     setProjects(data || []);
+  };
+
+  const fetchAllExtras = async () => {
+    const { data } = await supabase.from("task_assignees").select("task_id, user_id");
+    const map: Record<string, string[]> = {};
+    (data || []).forEach((row: any) => {
+      if (!map[row.task_id]) map[row.task_id] = [];
+      map[row.task_id].push(row.user_id);
+    });
+    setAllExtras(map);
   };
 
   const memberName = (id: string | null) => {
@@ -222,7 +234,9 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       toast({ title: "Erro ao adicionar", description: error.message, variant: "destructive" });
       return;
     }
-    setExtraAssignees([...extraAssignees, userId]);
+    const next = [...extraAssignees, userId];
+    setExtraAssignees(next);
+    setAllExtras({ ...allExtras, [taskId]: next });
     setAddAssigneeId("");
   };
 
@@ -236,7 +250,9 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
       return;
     }
-    setExtraAssignees(extraAssignees.filter((u) => u !== userId));
+    const next = extraAssignees.filter((u) => u !== userId);
+    setExtraAssignees(next);
+    setAllExtras({ ...allExtras, [taskId]: next });
   };
 
   const toggleComplete = (task: Task) => {
@@ -468,13 +484,18 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                         {task.description && (
                                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
                                         )}
-                                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                         <div className="flex items-center gap-2 mt-2 flex-wrap">
                                           <Badge className={`${priorityColors[task.priority]} text-[10px] py-0 h-4`}>
                                             <Flag className="h-2.5 w-2.5 mr-0.5" />
                                             {priorityLabels[task.priority]}
                                           </Badge>
                                           <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                                             <UserIcon className="h-3 w-3" /> {memberName(task.assigned_to)}
+                                            {(allExtras[task.id] || []).map((uid) => (
+                                              <span key={uid} className="ml-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                                                + {memberName(uid)}
+                                              </span>
+                                            ))}
                                           </span>
                                           {task.due_date && (
                                             <span className={`inline-flex items-center gap-1 text-[11px] ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}>
@@ -625,7 +646,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label>Pessoas adicionais</Label>
+                          <Label>Outras pessoas na tarefa</Label>
                           <div className="flex flex-wrap gap-1.5">
                             {extraAssignees.length === 0 && (
                               <span className="text-xs text-muted-foreground italic">Nenhuma pessoa adicional.</span>
