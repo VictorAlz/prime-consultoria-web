@@ -88,6 +88,8 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const [showForm, setShowForm] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openTask, setOpenTask] = useState<Task | null>(null);
+  const [extraAssignees, setExtraAssignees] = useState<string[]>([]);
+  const [addAssigneeId, setAddAssigneeId] = useState<string>("");
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -102,6 +104,18 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     fetchMembers();
     fetchProjects();
   }, [canManage]);
+
+  useEffect(() => {
+    const loadExtras = async () => {
+      if (!openTask) { setExtraAssignees([]); return; }
+      const { data } = await supabase
+        .from("task_assignees")
+        .select("user_id")
+        .eq("task_id", openTask.id);
+      setExtraAssignees((data || []).map((d: any) => d.user_id));
+    };
+    loadExtras();
+  }, [openTask?.id]);
 
   const fetchTasks = async () => {
     setLoading(true);
@@ -189,6 +203,40 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     setTasks(tasks.map((t) => (t.id === task.id ? { ...t, assigned_to } : t)));
     if (openTask?.id === task.id) setOpenTask({ ...task, assigned_to });
     toast({ title: "Responsável atualizado" });
+  };
+
+  const updateField = async (task: Task, patch: Partial<Task>) => {
+    const { error } = await supabase.from("tasks").update(patch).eq("id", task.id);
+    if (error) {
+      toast({ title: "Erro ao atualizar", description: error.message, variant: "destructive" });
+      return;
+    }
+    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...patch } : t)));
+    if (openTask?.id === task.id) setOpenTask({ ...task, ...patch });
+  };
+
+  const addExtraAssignee = async (taskId: string, userId: string) => {
+    if (!userId || extraAssignees.includes(userId)) return;
+    const { error } = await supabase.from("task_assignees").insert({ task_id: taskId, user_id: userId });
+    if (error) {
+      toast({ title: "Erro ao adicionar", description: error.message, variant: "destructive" });
+      return;
+    }
+    setExtraAssignees([...extraAssignees, userId]);
+    setAddAssigneeId("");
+  };
+
+  const removeExtraAssignee = async (taskId: string, userId: string) => {
+    const { error } = await supabase
+      .from("task_assignees")
+      .delete()
+      .eq("task_id", taskId)
+      .eq("user_id", userId);
+    if (error) {
+      toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
+      return;
+    }
+    setExtraAssignees(extraAssignees.filter((u) => u !== userId));
   };
 
   const toggleComplete = (task: Task) => {
@@ -531,23 +579,94 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                 {(canManage || openTask.assigned_to === currentUserId) && (
                   <div className="space-y-2 pt-2 border-t border-border">
                     {canManage && (
-                      <div className="space-y-2">
-                        <Label>Responsável</Label>
-                        <Select
-                          value={openTask.assigned_to || "none"}
-                          onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
-                        >
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Não atribuído</SelectItem>
-                            {members.map((m) => (
-                              <SelectItem key={m.user_id} value={m.user_id}>
-                                {m.full_name || "Sem nome"}
-                              </SelectItem>
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <Label>Responsável principal</Label>
+                            <Select
+                              value={openTask.assigned_to || "none"}
+                              onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
+                            >
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Não atribuído</SelectItem>
+                                {members.map((m) => (
+                                  <SelectItem key={m.user_id} value={m.user_id}>
+                                    {m.full_name || "Sem nome"}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label>Prioridade</Label>
+                            <Select
+                              value={openTask.priority}
+                              onValueChange={(v) => updateField(openTask, { priority: v as TaskPriority })}
+                            >
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="baixa">Baixa</SelectItem>
+                                <SelectItem value="media">Média</SelectItem>
+                                <SelectItem value="alta">Alta</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1.5 sm:col-span-2">
+                            <Label>Prazo</Label>
+                            <Input
+                              type="date"
+                              value={openTask.due_date ? openTask.due_date.slice(0, 10) : ""}
+                              onChange={(e) =>
+                                updateField(openTask, {
+                                  due_date: e.target.value ? new Date(e.target.value).toISOString() : null,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label>Pessoas adicionais</Label>
+                          <div className="flex flex-wrap gap-1.5">
+                            {extraAssignees.length === 0 && (
+                              <span className="text-xs text-muted-foreground italic">Nenhuma pessoa adicional.</span>
+                            )}
+                            {extraAssignees.map((uid) => (
+                              <Badge key={uid} variant="secondary" className="gap-1">
+                                {memberName(uid)}
+                                <button
+                                  onClick={() => removeExtraAssignee(openTask.id, uid)}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </Badge>
                             ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Select value={addAssigneeId} onValueChange={setAddAssigneeId}>
+                              <SelectTrigger className="flex-1"><SelectValue placeholder="Adicionar membro..." /></SelectTrigger>
+                              <SelectContent>
+                                {members
+                                  .filter((m) => m.user_id !== openTask.assigned_to && !extraAssignees.includes(m.user_id))
+                                  .map((m) => (
+                                    <SelectItem key={m.user_id} value={m.user_id}>
+                                      {m.full_name || "Sem nome"}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              size="sm"
+                              onClick={() => addExtraAssignee(openTask.id, addAssigneeId)}
+                              disabled={!addAssigneeId}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     )}
                     <Label>Atualizar status</Label>
                     <Select
