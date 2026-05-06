@@ -88,6 +88,8 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const [showForm, setShowForm] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openTask, setOpenTask] = useState<Task | null>(null);
+  const [extraAssignees, setExtraAssignees] = useState<string[]>([]);
+  const [addAssigneeId, setAddAssigneeId] = useState<string>("");
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -102,6 +104,18 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     fetchMembers();
     fetchProjects();
   }, [canManage]);
+
+  useEffect(() => {
+    const loadExtras = async () => {
+      if (!openTask) { setExtraAssignees([]); return; }
+      const { data } = await supabase
+        .from("task_assignees")
+        .select("user_id")
+        .eq("task_id", openTask.id);
+      setExtraAssignees((data || []).map((d: any) => d.user_id));
+    };
+    loadExtras();
+  }, [openTask?.id]);
 
   const fetchTasks = async () => {
     setLoading(true);
