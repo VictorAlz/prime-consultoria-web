@@ -530,6 +530,25 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
 
                 {(canManage || openTask.assigned_to === currentUserId) && (
                   <div className="space-y-2 pt-2 border-t border-border">
+                    {canManage && (
+                      <div className="space-y-2">
+                        <Label>Responsável</Label>
+                        <Select
+                          value={openTask.assigned_to || "none"}
+                          onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Não atribuído</SelectItem>
+                            {members.map((m) => (
+                              <SelectItem key={m.user_id} value={m.user_id}>
+                                {m.full_name || "Sem nome"}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                     <Label>Atualizar status</Label>
                     <Select
                       value={openTask.status}
