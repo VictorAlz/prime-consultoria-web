@@ -102,6 +102,7 @@ const AdminDashboard = () => {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [leadsLoading, setLeadsLoading] = useState(false);
   const [userRole, setUserRole] = useState<AppRole | null>(null);
+  const [projectRole, setProjectRole] = useState<string | null>(null);
   const [allUsers, setAllUsers] = useState<UserWithRole[]>([]);
   const [usersLoading, setUsersLoading] = useState(false);
   const [psSettings, setPsSettings] = useState<PSSettings>({
@@ -197,20 +198,22 @@ const AdminDashboard = () => {
   const fetchUserRole = async () => {
     if (!user) return;
     try {
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id)
-        .maybeSingle();
-
+      const [{ data, error }, { data: prof }] = await Promise.all([
+        supabase.from("user_roles").select("role").eq("user_id", user.id).maybeSingle(),
+        supabase.from("profiles").select("project_role").eq("user_id", user.id).maybeSingle(),
+      ]);
       if (error) throw error;
       const role = (data?.role as AppRole) || "trainee";
       setUserRole(role);
+      setProjectRole(prof?.project_role || null);
     } catch (error: any) {
       console.error("Error fetching role:", error);
       setUserRole("trainee");
     }
   };
+
+  const projectRoleAllowsDelegation =
+    !!projectRole && ["Coordenador de Projetos", "Delivery Manager", "Diretor de Projetos"].includes(projectRole);
 
   const fetchAllUsers = async () => {
     setUsersLoading(true);
