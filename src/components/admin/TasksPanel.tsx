@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight, Pencil } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -453,10 +453,9 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                 return (
                                   <div
                                     key={task.id}
-                                    className="bg-card border border-border rounded-md p-3 hover:border-primary/40 transition-colors group cursor-pointer"
-                                    onClick={() => setOpenTask(task)}
+                                    className="bg-card border border-border rounded-md p-3 hover:border-primary/40 transition-colors group"
                                   >
-                                    <div className="flex items-start gap-2" onClick={(e) => e.stopPropagation()}>
+                                    <div className="flex items-start gap-2">
                                       <Checkbox
                                         checked={task.status === "concluida"}
                                         onCheckedChange={() => toggleComplete(task)}
@@ -483,23 +482,22 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                             </span>
                                           )}
                                         </div>
-                                        {(canManage || task.assigned_to === currentUserId) && (
-                                          <div className="flex items-center gap-1 mt-2" onClick={(e) => e.stopPropagation()}>
-                                            <Select value={task.status} onValueChange={(v) => updateStatus(task, v as TaskStatus)}>
-                                              <SelectTrigger className="h-7 text-xs flex-1"><SelectValue /></SelectTrigger>
-                                              <SelectContent>
-                                                <SelectItem value="a_fazer">A Fazer</SelectItem>
-                                                <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                                                <SelectItem value="concluida">Concluída</SelectItem>
-                                              </SelectContent>
-                                            </Select>
-                                            {canManage && (
-                                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => deleteTask(task.id)}>
-                                                <Trash2 className="h-3.5 w-3.5 text-destructive" />
-                                              </Button>
-                                            )}
-                                          </div>
-                                        )}
+                                        <div className="flex items-center gap-1 mt-2">
+                                          <Button
+                                            size="sm"
+                                            variant="outline"
+                                            className="h-7 text-xs flex-1"
+                                            onClick={() => setOpenTask(task)}
+                                          >
+                                            <Pencil className="h-3 w-3 mr-1" />
+                                            {canManage ? "Abrir / Editar" : "Abrir"}
+                                          </Button>
+                                          {canManage && (
+                                            <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => deleteTask(task.id)}>
+                                              <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                                            </Button>
+                                          )}
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
