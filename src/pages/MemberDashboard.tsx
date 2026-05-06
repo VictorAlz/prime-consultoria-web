@@ -178,7 +178,7 @@ const MemberDashboard = () => {
             </div>
           )}
 
-          {activeTab === "tarefas" && <TasksPanel currentUserId={user.id} canManage={false} />}
+          {activeTab === "tarefas" && <TasksPanel currentUserId={user.id} canManage={canDelegate} />}
           {activeTab === "hub" && <ProjectsHubPanel currentUserId={user.id} canManage={canManageHub} />}
           {activeTab === "portfolio" && (
             <PortfolioHealthPanel currentUserId={user.id} isAdmin={isAdmin} canDelegate={canDelegate} />
