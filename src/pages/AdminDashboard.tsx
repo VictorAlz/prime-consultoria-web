@@ -45,6 +45,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import TasksPanel from "@/components/admin/TasksPanel";
+import ProjectsHubPanel from "@/components/admin/ProjectsHubPanel";
 
 type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
 
@@ -517,6 +518,7 @@ const AdminDashboard = () => {
     { icon: LayoutDashboard, label: "Dashboard", key: "dashboard", minRole: "trainee" as AppRole },
     { icon: Mail, label: "Leads", key: "leads", minRole: "membro" as AppRole },
     { icon: ListChecks, label: "Tarefas", key: "tarefas", minRole: "trainee" as AppRole },
+    { icon: Briefcase, label: "Hub Projetos", key: "hub", minRole: "trainee" as AppRole },
     { icon: Briefcase, label: "Cases", key: "cases", minRole: "membro" as AppRole },
     { icon: Users, label: "Equipe", key: "equipe", minRole: "diretor" as AppRole },
     { icon: Shield, label: "Usuários", key: "usuarios", minRole: "admin" as AppRole },
@@ -969,6 +971,10 @@ const AdminDashboard = () => {
 
           {activeTab === "tarefas" && user && (
             <TasksPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+          )}
+
+          {activeTab === "hub" && user && (
+            <ProjectsHubPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
           )}
 
           {activeTab === "equipe" && hasMinimumRole("diretor") && (
