@@ -89,6 +89,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [openTask, setOpenTask] = useState<Task | null>(null);
   const [extraAssignees, setExtraAssignees] = useState<string[]>([]);
+  const [allExtras, setAllExtras] = useState<Record<string, string[]>>({});
   const [addAssigneeId, setAddAssigneeId] = useState<string>("");
   const [newTask, setNewTask] = useState({
     title: "",
@@ -103,6 +104,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     fetchTasks();
     fetchMembers();
     fetchProjects();
+    fetchAllExtras();
   }, [canManage]);
 
   useEffect(() => {
@@ -145,6 +147,16 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       .select("id, name")
       .order("name");
     setProjects(data || []);
+  };
+
+  const fetchAllExtras = async () => {
+    const { data } = await supabase.from("task_assignees").select("task_id, user_id");
+    const map: Record<string, string[]> = {};
+    (data || []).forEach((row: any) => {
+      if (!map[row.task_id]) map[row.task_id] = [];
+      map[row.task_id].push(row.user_id);
+    });
+    setAllExtras(map);
   };
 
   const memberName = (id: string | null) => {
@@ -222,7 +234,9 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       toast({ title: "Erro ao adicionar", description: error.message, variant: "destructive" });
       return;
     }
-    setExtraAssignees([...extraAssignees, userId]);
+    const next = [...extraAssignees, userId];
+    setExtraAssignees(next);
+    setAllExtras({ ...allExtras, [taskId]: next });
     setAddAssigneeId("");
   };
 
@@ -236,7 +250,9 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
       return;
     }
-    setExtraAssignees(extraAssignees.filter((u) => u !== userId));
+    const next = extraAssignees.filter((u) => u !== userId);
+    setExtraAssignees(next);
+    setAllExtras({ ...allExtras, [taskId]: next });
   };
 
   const toggleComplete = (task: Task) => {
