@@ -15,6 +15,13 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 type TaskStatus = "a_fazer" | "em_andamento" | "concluida";
 type TaskPriority = "baixa" | "media" | "alta";
@@ -80,6 +87,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+  const [openTask, setOpenTask] = useState<Task | null>(null);
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
@@ -381,8 +389,12 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                               {g.tasks.filter(t => t.status === col).map((task) => {
                                 const overdue = task.due_date && task.status !== "concluida" && new Date(task.due_date) < new Date();
                                 return (
-                                  <div key={task.id} className="bg-card border border-border rounded-md p-3 hover:border-primary/40 transition-colors group">
-                                    <div className="flex items-start gap-2">
+                                  <div
+                                    key={task.id}
+                                    className="bg-card border border-border rounded-md p-3 hover:border-primary/40 transition-colors group cursor-pointer"
+                                    onClick={() => setOpenTask(task)}
+                                  >
+                                    <div className="flex items-start gap-2" onClick={(e) => e.stopPropagation()}>
                                       <Checkbox
                                         checked={task.status === "concluida"}
                                         onCheckedChange={() => toggleComplete(task)}
@@ -410,7 +422,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                           )}
                                         </div>
                                         {(canManage || task.assigned_to === currentUserId) && (
-                                          <div className="flex items-center gap-1 mt-2">
+                                          <div className="flex items-center gap-1 mt-2" onClick={(e) => e.stopPropagation()}>
                                             <Select value={task.status} onValueChange={(v) => updateStatus(task, v as TaskStatus)}>
                                               <SelectTrigger className="h-7 text-xs flex-1"><SelectValue /></SelectTrigger>
                                               <SelectContent>
@@ -443,6 +455,89 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
           })}
         </div>
       )}
+
+      <Dialog open={!!openTask} onOpenChange={(o) => !o && setOpenTask(null)}>
+        <DialogContent className="max-w-lg">
+          {openTask && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="pr-6">{openTask.title}</DialogTitle>
+                <DialogDescription>
+                  Projeto: {projects.find(p => p.id === openTask.project_id)?.name || "Sem projeto"}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="space-y-4">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge className={`${priorityColors[openTask.priority]} text-white`}>
+                    <Flag className="h-3 w-3 mr-1" /> {priorityLabels[openTask.priority]}
+                  </Badge>
+                  <Badge variant="outline">
+                    <span className={`h-2 w-2 rounded-full mr-1.5 ${statusColors[openTask.status]}`} />
+                    {statusLabels[openTask.status]}
+                  </Badge>
+                  {openTask.due_date && (
+                    <Badge variant="outline">
+                      <Calendar className="h-3 w-3 mr-1" /> {formatDue(openTask.due_date)}
+                    </Badge>
+                  )}
+                </div>
+
+                <div>
+                  <Label className="text-xs text-muted-foreground">Descrição</Label>
+                  <p className="text-sm whitespace-pre-wrap mt-1">
+                    {openTask.description || <span className="text-muted-foreground italic">Sem descrição.</span>}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Responsável</Label>
+                    <p className="font-medium mt-1 flex items-center gap-1.5">
+                      <UserIcon className="h-3.5 w-3.5" /> {memberName(openTask.assigned_to)}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Delegado por</Label>
+                    <p className="font-medium mt-1 flex items-center gap-1.5">
+                      <UserIcon className="h-3.5 w-3.5" /> {memberName(openTask.created_by)}
+                    </p>
+                  </div>
+                  <div>
+                    <Label className="text-xs text-muted-foreground">Criada em</Label>
+                    <p className="mt-1">{new Date(openTask.created_at).toLocaleString("pt-BR")}</p>
+                  </div>
+                  {openTask.completed_at && (
+                    <div>
+                      <Label className="text-xs text-muted-foreground">Concluída em</Label>
+                      <p className="mt-1">{new Date(openTask.completed_at).toLocaleString("pt-BR")}</p>
+                    </div>
+                  )}
+                </div>
+
+                {(canManage || openTask.assigned_to === currentUserId) && (
+                  <div className="space-y-2 pt-2 border-t border-border">
+                    <Label>Atualizar status</Label>
+                    <Select
+                      value={openTask.status}
+                      onValueChange={(v) => {
+                        updateStatus(openTask, v as TaskStatus);
+                        setOpenTask({ ...openTask, status: v as TaskStatus });
+                      }}
+                    >
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="a_fazer">A Fazer</SelectItem>
+                        <SelectItem value="em_andamento">Em Andamento</SelectItem>
+                        <SelectItem value="concluida">Concluída</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 };
