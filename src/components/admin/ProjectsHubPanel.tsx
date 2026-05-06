@@ -27,6 +27,7 @@ interface Invite {
   token: string;
   cargo: string;
   email: string | null;
+  recipient_name: string | null;
   status: string;
   expires_at: string;
   created_at: string;
@@ -52,6 +53,7 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
   const [showForm, setShowForm] = useState(false);
   const [newCargo, setNewCargo] = useState("");
   const [newEmail, setNewEmail] = useState("");
+  const [newName, setNewName] = useState("");
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingCargo, setEditingCargo] = useState("");
 
@@ -95,12 +97,17 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
       toast({ title: "Cargo obrigatório", variant: "destructive" });
       return;
     }
+    if (!newName.trim()) {
+      toast({ title: "Nome do convidado obrigatório", variant: "destructive" });
+      return;
+    }
     try {
       const { data, error } = await supabase
         .from("project_invites")
         .insert({
           cargo: newCargo.trim(),
           email: newEmail.trim() || null,
+          recipient_name: newName.trim(),
           created_by: currentUserId,
         })
         .select()
@@ -109,6 +116,7 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
       setInvites([data as Invite, ...invites]);
       setNewCargo("");
       setNewEmail("");
+      setNewName("");
       setShowForm(false);
       toast({ title: "Convite criado!", description: "Link gerado com sucesso." });
     } catch (e: any) {
@@ -135,7 +143,8 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
   };
 
   const shareWhatsapp = (inv: Invite) => {
-    const msg = `Você foi convidado para o Hub de Projetos da CASE EJ para o cargo de *${inv.cargo}*. Acesse: ${inviteUrl(inv.token)}`;
+    const greet = inv.recipient_name ? `Olá ${inv.recipient_name}! ` : "";
+    const msg = `${greet}Você foi convidado para o Hub de Projetos da CASE EJ para o cargo de *${inv.cargo}*. Acesse: ${inviteUrl(inv.token)}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, "_blank");
   };
 
@@ -187,7 +196,15 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
           </div>
 
           {showForm && (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 p-4 bg-muted/30 rounded-lg">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 p-4 bg-muted/30 rounded-lg">
+              <div className="space-y-2">
+                <Label>Nome do convidado *</Label>
+                <Input
+                  placeholder="Ex: Maria Silva"
+                  value={newName}
+                  onChange={(e) => setNewName(e.target.value)}
+                />
+              </div>
               <div className="space-y-2">
                 <Label>Cargo no Hub *</Label>
                 <Select value={newCargo} onValueChange={setNewCargo}>
@@ -206,7 +223,7 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
                   onChange={(e) => setNewEmail(e.target.value)}
                 />
               </div>
-              <div className="md:col-span-2 flex justify-end gap-2">
+              <div className="md:col-span-3 flex justify-end gap-2">
                 <Button variant="outline" onClick={() => setShowForm(false)}>
                   <X className="h-4 w-4 mr-1" /> Cancelar
                 </Button>
@@ -224,6 +241,7 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead>Convidado</TableHead>
                     <TableHead>Cargo</TableHead>
                     <TableHead className="hidden md:table-cell">Email</TableHead>
                     <TableHead>Status</TableHead>
@@ -237,6 +255,7 @@ const ProjectsHubPanel = ({ currentUserId, canManage }: Props) => {
                     const status = expired && inv.status === "pendente" ? "expirado" : inv.status;
                     return (
                       <TableRow key={inv.id}>
+                        <TableCell className="font-medium">{inv.recipient_name || "—"}</TableCell>
                         <TableCell className="font-medium">{inv.cargo}</TableCell>
                         <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                           {inv.email || "-"}
