@@ -177,6 +177,20 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     setTasks(tasks.map((t) => (t.id === task.id ? { ...t, status, completed_at } : t)));
   };
 
+  const updateAssignee = async (task: Task, assigned_to: string | null) => {
+    const { error } = await supabase
+      .from("tasks")
+      .update({ assigned_to })
+      .eq("id", task.id);
+    if (error) {
+      toast({ title: "Erro ao atualizar responsável", description: error.message, variant: "destructive" });
+      return;
+    }
+    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, assigned_to } : t)));
+    if (openTask?.id === task.id) setOpenTask({ ...task, assigned_to });
+    toast({ title: "Responsável atualizado" });
+  };
+
   const toggleComplete = (task: Task) => {
     updateStatus(task, task.status === "concluida" ? "a_fazer" : "concluida");
   };
@@ -516,6 +530,25 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
 
                 {(canManage || openTask.assigned_to === currentUserId) && (
                   <div className="space-y-2 pt-2 border-t border-border">
+                    {canManage && (
+                      <div className="space-y-2">
+                        <Label>Responsável</Label>
+                        <Select
+                          value={openTask.assigned_to || "none"}
+                          onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
+                        >
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="none">Não atribuído</SelectItem>
+                            {members.map((m) => (
+                              <SelectItem key={m.user_id} value={m.user_id}>
+                                {m.full_name || "Sem nome"}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    )}
                     <Label>Atualizar status</Label>
                     <Select
                       value={openTask.status}
