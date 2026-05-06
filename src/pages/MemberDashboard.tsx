@@ -77,7 +77,7 @@ const MemberDashboard = () => {
       <header className="bg-card border-b border-border px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <h1 className="text-xl font-bold">Painel de Membros</h1>
+            <h1 className="text-xl font-bold">Hub de Projetos</h1>
             {userRole && <Badge variant="outline">{userRole}</Badge>}
           </div>
           <div className="flex items-center gap-4">
