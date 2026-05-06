@@ -985,7 +985,10 @@ const AdminDashboard = () => {
           )}
 
           {activeTab === "tarefas" && user && (
-            <TasksPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+            <TasksPanel
+              currentUserId={user.id}
+              canManage={hasMinimumRole("admin") || projectRoleAllowsDelegation}
+            />
           )}
 
           {activeTab === "hub" && user && (
