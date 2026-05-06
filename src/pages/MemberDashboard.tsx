@@ -76,11 +76,13 @@ const MemberDashboard = () => {
     { icon: UserIcon, label: "Perfil", key: "perfil" },
   ];
 
-  const isAdmin = !!userRole && ["presidencia", "admin"].includes(userRole);
+  const isAdmin = userRole === "admin";
   const canDelegate =
     isAdmin ||
     (!!projectRole && ["Coordenador de Projetos", "Delivery Manager", "Diretor de Projetos"].includes(projectRole));
-  const canManageHub = isAdmin || !!userRole && ["diretor"].includes(userRole);
+  const canManageHub =
+    isAdmin ||
+    (!!projectRole && ["Diretor de Projetos", "Coordenador de Projetos"].includes(projectRole));
 
   return (
     <div className="min-h-screen bg-background">
