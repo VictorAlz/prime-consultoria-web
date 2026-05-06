@@ -182,10 +182,6 @@ const MemberDashboard = () => {
                   <p className="font-medium">{user.email}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-muted-foreground">Nível de acesso</p>
-                  <p className="font-medium capitalize">{userRole}</p>
-                </div>
-                <div>
                   <p className="text-sm text-muted-foreground">Cargo no Hub de Projetos</p>
                   <p className="font-medium">{projectRole || "—"}</p>
                 </div>
