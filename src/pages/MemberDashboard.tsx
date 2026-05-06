@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
-import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks } from "lucide-react";
+import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks, Shield } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import TasksPanel from "@/components/admin/TasksPanel";
 import ProjectsHubPanel from "@/components/admin/ProjectsHubPanel";
@@ -47,10 +47,6 @@ const MemberDashboard = () => {
       const role = (roleData?.role as AppRole) || "trainee";
       setUserRole(role);
       setProjectRole(profData?.project_role || null);
-      // If elevated, send to admin panel
-      if (["diretor", "presidencia", "admin"].includes(role)) {
-        navigate("/admin/dashboard");
-      }
     };
     load();
   }, [user, navigate]);
@@ -86,6 +82,12 @@ const MemberDashboard = () => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground hidden sm:block">{user.email}</span>
+            {userRole && ["diretor", "presidencia", "admin"].includes(userRole) && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/admin/dashboard")}>
+                <Shield className="h-4 w-4 mr-2" />
+                Painel Admin
+              </Button>
+            )}
             <Button variant="outline" size="sm" onClick={handleLogout}>
               <LogOut className="h-4 w-4 mr-2" />Sair
             </Button>
