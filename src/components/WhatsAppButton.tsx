@@ -1,6 +1,11 @@
 import { MessageCircle } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 const WhatsAppButton = () => {
+  const { pathname } = useLocation();
+  const hiddenRoutes = ["/membro", "/admin/dashboard", "/admin/login", "/login", "/convite"];
+  if (hiddenRoutes.some((r) => pathname.startsWith(r))) return null;
+
   const phone = "5522999443332";
   const message = encodeURIComponent("Olá! Gostaria de saber mais sobre a CaseEJ.");
 
