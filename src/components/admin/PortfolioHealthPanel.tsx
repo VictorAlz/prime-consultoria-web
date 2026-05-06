@@ -189,7 +189,7 @@ const PortfolioHealthPanel = ({ currentUserId, isAdmin, canDelegate }: Props) =>
         <p className="text-muted-foreground">Acompanhe o status dos projetos e o rendimento do time.</p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
         {(["verde", "amarelo", "vermelho"] as Health[]).map((h) => (
           <div key={h} className="bg-card border border-border rounded-xl p-4">
             <div className="flex items-center gap-2">
