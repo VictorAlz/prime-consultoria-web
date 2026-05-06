@@ -646,7 +646,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                         </div>
 
                         <div className="space-y-1.5">
-                          <Label>Pessoas adicionais</Label>
+                          <Label>Outras pessoas na tarefa</Label>
                           <div className="flex flex-wrap gap-1.5">
                             {extraAssignees.length === 0 && (
                               <span className="text-xs text-muted-foreground italic">Nenhuma pessoa adicional.</span>
