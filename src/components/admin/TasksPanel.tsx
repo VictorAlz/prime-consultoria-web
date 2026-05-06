@@ -491,6 +491,11 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                           </Badge>
                                           <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
                                             <UserIcon className="h-3 w-3" /> {memberName(task.assigned_to)}
+                                            {(allExtras[task.id] || []).map((uid) => (
+                                              <span key={uid} className="ml-1 inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                                                + {memberName(uid)}
+                                              </span>
+                                            ))}
                                           </span>
                                           {task.due_date && (
                                             <span className={`inline-flex items-center gap-1 text-[11px] ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}>
