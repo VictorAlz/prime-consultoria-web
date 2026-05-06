@@ -47,10 +47,6 @@ const MemberDashboard = () => {
       const role = (roleData?.role as AppRole) || "trainee";
       setUserRole(role);
       setProjectRole(profData?.project_role || null);
-      // If elevated, send to admin panel
-      if (["diretor", "presidencia", "admin"].includes(role)) {
-        navigate("/admin/dashboard");
-      }
     };
     load();
   }, [user, navigate]);
