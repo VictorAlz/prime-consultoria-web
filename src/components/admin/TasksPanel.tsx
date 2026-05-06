@@ -579,23 +579,94 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                 {(canManage || openTask.assigned_to === currentUserId) && (
                   <div className="space-y-2 pt-2 border-t border-border">
                     {canManage && (
-                      <div className="space-y-2">
-                        <Label>Responsável</Label>
-                        <Select
-                          value={openTask.assigned_to || "none"}
-                          onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
-                        >
-                          <SelectTrigger><SelectValue /></SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="none">Não atribuído</SelectItem>
-                            {members.map((m) => (
-                              <SelectItem key={m.user_id} value={m.user_id}>
-                                {m.full_name || "Sem nome"}
-                              </SelectItem>
+                      <>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          <div className="space-y-1.5">
+                            <Label>Responsável principal</Label>
+                            <Select
+                              value={openTask.assigned_to || "none"}
+                              onValueChange={(v) => updateAssignee(openTask, v === "none" ? null : v)}
+                            >
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="none">Não atribuído</SelectItem>
+                                {members.map((m) => (
+                                  <SelectItem key={m.user_id} value={m.user_id}>
+                                    {m.full_name || "Sem nome"}
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1.5">
+                            <Label>Prioridade</Label>
+                            <Select
+                              value={openTask.priority}
+                              onValueChange={(v) => updateField(openTask, { priority: v as TaskPriority })}
+                            >
+                              <SelectTrigger><SelectValue /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="baixa">Baixa</SelectItem>
+                                <SelectItem value="media">Média</SelectItem>
+                                <SelectItem value="alta">Alta</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="space-y-1.5 sm:col-span-2">
+                            <Label>Prazo</Label>
+                            <Input
+                              type="date"
+                              value={openTask.due_date ? openTask.due_date.slice(0, 10) : ""}
+                              onChange={(e) =>
+                                updateField(openTask, {
+                                  due_date: e.target.value ? new Date(e.target.value).toISOString() : null,
+                                })
+                              }
+                            />
+                          </div>
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <Label>Pessoas adicionais</Label>
+                          <div className="flex flex-wrap gap-1.5">
+                            {extraAssignees.length === 0 && (
+                              <span className="text-xs text-muted-foreground italic">Nenhuma pessoa adicional.</span>
+                            )}
+                            {extraAssignees.map((uid) => (
+                              <Badge key={uid} variant="secondary" className="gap-1">
+                                {memberName(uid)}
+                                <button
+                                  onClick={() => removeExtraAssignee(openTask.id, uid)}
+                                  className="ml-1 hover:text-destructive"
+                                >
+                                  <X className="h-3 w-3" />
+                                </button>
+                              </Badge>
                             ))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                          </div>
+                          <div className="flex gap-2">
+                            <Select value={addAssigneeId} onValueChange={setAddAssigneeId}>
+                              <SelectTrigger className="flex-1"><SelectValue placeholder="Adicionar membro..." /></SelectTrigger>
+                              <SelectContent>
+                                {members
+                                  .filter((m) => m.user_id !== openTask.assigned_to && !extraAssignees.includes(m.user_id))
+                                  .map((m) => (
+                                    <SelectItem key={m.user_id} value={m.user_id}>
+                                      {m.full_name || "Sem nome"}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
+                            <Button
+                              size="sm"
+                              onClick={() => addExtraAssignee(openTask.id, addAssigneeId)}
+                              disabled={!addAssigneeId}
+                            >
+                              <Plus className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </div>
+                      </>
                     )}
                     <Label>Atualizar status</Label>
                     <Select
