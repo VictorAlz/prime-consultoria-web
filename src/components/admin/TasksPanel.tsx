@@ -205,6 +205,40 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     toast({ title: "Responsável atualizado" });
   };
 
+  const updateField = async (task: Task, patch: Partial<Task>) => {
+    const { error } = await supabase.from("tasks").update(patch).eq("id", task.id);
+    if (error) {
+      toast({ title: "Erro ao atualizar", description: error.message, variant: "destructive" });
+      return;
+    }
+    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, ...patch } : t)));
+    if (openTask?.id === task.id) setOpenTask({ ...task, ...patch });
+  };
+
+  const addExtraAssignee = async (taskId: string, userId: string) => {
+    if (!userId || extraAssignees.includes(userId)) return;
+    const { error } = await supabase.from("task_assignees").insert({ task_id: taskId, user_id: userId });
+    if (error) {
+      toast({ title: "Erro ao adicionar", description: error.message, variant: "destructive" });
+      return;
+    }
+    setExtraAssignees([...extraAssignees, userId]);
+    setAddAssigneeId("");
+  };
+
+  const removeExtraAssignee = async (taskId: string, userId: string) => {
+    const { error } = await supabase
+      .from("task_assignees")
+      .delete()
+      .eq("task_id", taskId)
+      .eq("user_id", userId);
+    if (error) {
+      toast({ title: "Erro ao remover", description: error.message, variant: "destructive" });
+      return;
+    }
+    setExtraAssignees(extraAssignees.filter((u) => u !== userId));
+  };
+
   const toggleComplete = (task: Task) => {
     updateStatus(task, task.status === "concluida" ? "a_fazer" : "concluida");
   };
