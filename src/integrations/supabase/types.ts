@@ -130,6 +130,7 @@ export type Database = {
           email: string | null
           expires_at: string
           id: string
+          recipient_name: string | null
           status: string
           token: string
           updated_at: string
@@ -144,6 +145,7 @@ export type Database = {
           email?: string | null
           expires_at?: string
           id?: string
+          recipient_name?: string | null
           status?: string
           token?: string
           updated_at?: string
@@ -158,6 +160,7 @@ export type Database = {
           email?: string | null
           expires_at?: string
           id?: string
+          recipient_name?: string | null
           status?: string
           token?: string
           updated_at?: string
@@ -366,6 +369,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      can_delegate: { Args: { _user_id: string }; Returns: boolean }
       has_minimum_role: {
         Args: {
           _min_role: Database["public"]["Enums"]["app_role"]
