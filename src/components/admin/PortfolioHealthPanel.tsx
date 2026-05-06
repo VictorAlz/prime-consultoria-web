@@ -42,7 +42,8 @@ interface MemberLite {
 
 interface Props {
   currentUserId: string;
-  canManage: boolean; // Diretor+
+  isAdmin: boolean;       // pode criar/editar/excluir projetos e definir saúde
+  canDelegate: boolean;   // pode alocar membros e ajustar rendimento (Coord/Delivery/Admin)
 }
 
 const healthMeta: Record<Health, { label: string; dot: string; badge: string }> = {
@@ -51,7 +52,7 @@ const healthMeta: Record<Health, { label: string; dot: string; badge: string }> 
   vermelho: { label: "Crítico", dot: "bg-red-500", badge: "border-red-500/40 text-red-700 dark:text-red-400" },
 };
 
-const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
+const PortfolioHealthPanel = ({ currentUserId, isAdmin, canDelegate }: Props) => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
   const [assignments, setAssignments] = useState<Assignment[]>([]);
@@ -203,7 +204,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
       <div className="bg-card rounded-xl border border-border p-6 mb-8">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold">Projetos</h3>
-          {canManage && !showForm && (
+          {isAdmin && !showForm && (
             <Button size="sm" onClick={() => setShowForm(true)}>
               <Plus className="h-4 w-4 mr-1" /> Novo projeto
             </Button>
@@ -262,7 +263,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
                       {p.description && <p className="text-sm text-muted-foreground">{p.description}</p>}
                       {p.notes && <p className="text-xs text-muted-foreground mt-2 italic">{p.notes}</p>}
                     </div>
-                    {canManage && (
+                    {isAdmin && (
                       <div className="flex items-center gap-2">
                         <Select value={p.health} onValueChange={(v) => updateHealth(p.id, v as Health)}>
                           <SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger>
@@ -284,14 +285,14 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
                       <span className="text-sm font-medium flex items-center gap-1">
                         <Users className="h-4 w-4" /> Time alocado ({team.length})
                       </span>
-                      {canManage && showAssign !== p.id && (
+                      {canDelegate && showAssign !== p.id && (
                         <Button size="sm" variant="outline" onClick={() => setShowAssign(p.id)}>
                           <Plus className="h-3 w-3 mr-1" /> Alocar
                         </Button>
                       )}
                     </div>
 
-                    {canManage && showAssign === p.id && (
+                    {canDelegate && showAssign === p.id && (
                       <div className="grid md:grid-cols-3 gap-2 mb-3 p-3 bg-muted/30 rounded">
                         <Select value={assignForm.user_id} onValueChange={(v) => setAssignForm({ ...assignForm, user_id: v })}>
                           <SelectTrigger><SelectValue placeholder="Membro" /></SelectTrigger>
@@ -325,7 +326,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
                             <TableHead>Membro</TableHead>
                             <TableHead>Função</TableHead>
                             <TableHead>Rendimento</TableHead>
-                            {canManage && <TableHead className="text-right">Ações</TableHead>}
+                            {canDelegate && <TableHead className="text-right">Ações</TableHead>}
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -334,7 +335,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
                               <TableCell>{memberName(a.user_id)}</TableCell>
                               <TableCell className="text-muted-foreground">{a.role_in_project || "—"}</TableCell>
                               <TableCell>
-                                {canManage ? (
+                                {canDelegate ? (
                                   <Input
                                     type="number" min={0} max={100}
                                     className="w-20 h-8"
@@ -343,7 +344,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
                                   />
                                 ) : <Badge variant="outline">{a.performance_score}%</Badge>}
                               </TableCell>
-                              {canManage && (
+                              {canDelegate && (
                                 <TableCell className="text-right">
                                   <Button size="icon" variant="ghost" onClick={() => removeAssignment(a.id)}>
                                     <Trash2 className="h-4 w-4 text-destructive" />
@@ -363,7 +364,7 @@ const PortfolioHealthPanel = ({ currentUserId, canManage }: Props) => {
         )}
       </div>
 
-      {canManage && memberStats.length > 0 && (
+      {canDelegate && memberStats.length > 0 && (
         <div className="bg-card rounded-xl border border-border p-6">
           <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
             <TrendingUp className="h-5 w-5" /> Visão Macro do Time
