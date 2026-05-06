@@ -989,6 +989,14 @@ const AdminDashboard = () => {
             <ProjectsHubPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
           )}
 
+          {activeTab === "portfolio" && user && (
+            <PortfolioHealthPanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+          )}
+
+          {activeTab === "wiki" && user && (
+            <KnowledgeBasePanel currentUserId={user.id} canManage={hasMinimumRole("diretor")} />
+          )}
+
           {activeTab === "equipe" && hasMinimumRole("diretor") && (
             <>
               <div className="mb-8 flex items-center justify-between">
