@@ -4,10 +4,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
-import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks, Shield } from "lucide-react";
+import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks, Shield, Activity, BookOpen } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import TasksPanel from "@/components/admin/TasksPanel";
 import ProjectsHubPanel from "@/components/admin/ProjectsHubPanel";
+import PortfolioHealthPanel from "@/components/admin/PortfolioHealthPanel";
+import KnowledgeBasePanel from "@/components/admin/KnowledgeBasePanel";
 
 type AppRole = "trainee" | "membro" | "diretor" | "presidencia" | "admin";
 
@@ -68,9 +70,13 @@ const MemberDashboard = () => {
   const menuItems = [
     { icon: LayoutDashboard, label: "Início", key: "dashboard" },
     { icon: ListChecks, label: "Minhas Tarefas", key: "tarefas" },
+    { icon: Activity, label: "Portfólio", key: "portfolio" },
     { icon: Briefcase, label: "Hub de Projetos", key: "hub" },
+    { icon: BookOpen, label: "Wiki", key: "wiki" },
     { icon: UserIcon, label: "Perfil", key: "perfil" },
   ];
+
+  const canManage = !!userRole && ["diretor", "presidencia", "admin"].includes(userRole);
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,7 +173,9 @@ const MemberDashboard = () => {
           )}
 
           {activeTab === "tarefas" && <TasksPanel currentUserId={user.id} canManage={false} />}
-          {activeTab === "hub" && <ProjectsHubPanel currentUserId={user.id} canManage={false} />}
+          {activeTab === "hub" && <ProjectsHubPanel currentUserId={user.id} canManage={canManage} />}
+          {activeTab === "portfolio" && <PortfolioHealthPanel currentUserId={user.id} canManage={canManage} />}
+          {activeTab === "wiki" && <KnowledgeBasePanel currentUserId={user.id} canManage={canManage} />}
 
           {activeTab === "perfil" && (
             <div className="max-w-md">
