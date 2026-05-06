@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag } from "lucide-react";
+import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight } from "lucide-react";
 
 type TaskStatus = "a_fazer" | "em_andamento" | "concluida";
 type TaskPriority = "baixa" | "media" | "alta";
@@ -30,11 +30,17 @@ interface Task {
   created_by: string;
   completed_at: string | null;
   created_at: string;
+  project_id: string | null;
 }
 
 interface Member {
   user_id: string;
   full_name: string | null;
+}
+
+interface ProjectLite {
+  id: string;
+  name: string;
 }
 
 interface TasksPanelProps {
@@ -60,24 +66,33 @@ const statusLabels: Record<TaskStatus, string> = {
   concluida: "Concluída",
 };
 
+const statusColors: Record<TaskStatus, string> = {
+  a_fazer: "bg-muted-foreground",
+  em_andamento: "bg-accent",
+  concluida: "bg-green-500",
+};
+
 const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
   const { toast } = useToast();
   const [tasks, setTasks] = useState<Task[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
+  const [projects, setProjects] = useState<ProjectLite[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
-  const [filter, setFilter] = useState<"todas" | TaskStatus>("todas");
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
   const [newTask, setNewTask] = useState({
     title: "",
     description: "",
     priority: "media" as TaskPriority,
     due_date: "",
     assigned_to: "",
+    project_id: "",
   });
 
   useEffect(() => {
     fetchTasks();
-    if (canManage) fetchMembers();
+    fetchMembers();
+    fetchProjects();
   }, [canManage]);
 
   const fetchTasks = async () => {
@@ -102,6 +117,14 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     setMembers(data || []);
   };
 
+  const fetchProjects = async () => {
+    const { data } = await supabase
+      .from("projects")
+      .select("id, name")
+      .order("name");
+    setProjects(data || []);
+  };
+
   const memberName = (id: string | null) => {
     if (!id) return "Não atribuído";
     const m = members.find((x) => x.user_id === id);
@@ -119,6 +142,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       priority: newTask.priority,
       due_date: newTask.due_date ? new Date(newTask.due_date).toISOString() : null,
       assigned_to: newTask.assigned_to || null,
+      project_id: newTask.project_id || null,
       created_by: currentUserId,
     };
     const { data, error } = await supabase.from("tasks").insert(payload).select().single();
@@ -127,7 +151,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
       return;
     }
     setTasks([data as Task, ...tasks]);
-    setNewTask({ title: "", description: "", priority: "media", due_date: "", assigned_to: "" });
+    setNewTask({ title: "", description: "", priority: "media", due_date: "", assigned_to: "", project_id: "" });
     setShowForm(false);
     toast({ title: "Tarefa criada" });
   };
@@ -159,7 +183,30 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
     setTasks(tasks.filter((t) => t.id !== id));
   };
 
-  const filtered = tasks.filter((t) => filter === "todas" || t.status === filter);
+  // Group tasks by project_id
+  const groups = (() => {
+    const map = new Map<string, Task[]>();
+    for (const t of tasks) {
+      const key = t.project_id || "__sem_projeto__";
+      if (!map.has(key)) map.set(key, []);
+      map.get(key)!.push(t);
+    }
+    return Array.from(map.entries()).map(([key, list]) => ({
+      key,
+      name: key === "__sem_projeto__" ? "Sem projeto" : (projects.find(p => p.id === key)?.name || "Projeto removido"),
+      tasks: list,
+    })).sort((a, b) => (a.key === "__sem_projeto__" ? 1 : b.key === "__sem_projeto__" ? -1 : a.name.localeCompare(b.name)));
+  })();
+
+  // Also add empty groups for projects with no tasks (so admin can see them)
+  const projectsWithTasks = new Set(groups.map(g => g.key));
+  for (const p of projects) {
+    if (!projectsWithTasks.has(p.id)) {
+      groups.push({ key: p.id, name: p.name, tasks: [] });
+    }
+  }
+
+  const toggle = (key: string) => setCollapsed({ ...collapsed, [key]: !collapsed[key] });
 
   const formatDue = (d: string | null) => {
     if (!d) return null;
@@ -172,12 +219,12 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
         <div>
           <h2 className="text-2xl font-bold text-foreground mb-2 flex items-center gap-2">
             <ListChecks className="h-6 w-6" />
-            Tarefas — Departamento de Projetos
+            Hub de Tarefas
           </h2>
           <p className="text-muted-foreground">
             {canManage
-              ? "Delegue tarefas para os membros e acompanhe o progresso."
-              : "Suas tarefas atribuídas. Marque como concluída ao finalizar."}
+              ? "Delegue tarefas, acompanhe quem está com o quê, organizado por projeto."
+              : "Tarefas onde você está envolvido, agrupadas por projeto."}
           </p>
         </div>
         {canManage && (
@@ -185,22 +232,6 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
             <Plus className="h-4 w-4" /> Nova Tarefa
           </Button>
         )}
-      </div>
-
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {(["todas", "a_fazer", "em_andamento", "concluida"] as const).map((f) => (
-          <Button
-            key={f}
-            variant={filter === f ? "default" : "outline"}
-            size="sm"
-            onClick={() => setFilter(f)}
-          >
-            {f === "todas" ? "Todas" : statusLabels[f]}
-            <span className="ml-2 text-xs opacity-70">
-              ({f === "todas" ? tasks.length : tasks.filter((t) => t.status === f).length})
-            </span>
-          </Button>
-        ))}
       </div>
 
       {showForm && canManage && (
@@ -228,6 +259,21 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                 placeholder="Detalhes da tarefa..."
                 rows={3}
               />
+            </div>
+            <div className="space-y-2">
+              <Label>Projeto</Label>
+              <Select
+                value={newTask.project_id || "none"}
+                onValueChange={(v) => setNewTask({ ...newTask, project_id: v === "none" ? "" : v })}
+              >
+                <SelectTrigger><SelectValue placeholder="Sem projeto" /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">Sem projeto</SelectItem>
+                  {projects.map((p) => (
+                    <SelectItem key={p.id} value={p.id}>{p.name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
             <div className="space-y-2">
               <Label>Responsável</Label>
@@ -280,109 +326,118 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
         <div className="flex justify-center py-12">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
-      ) : filtered.length === 0 ? (
+      ) : tasks.length === 0 && projects.length === 0 ? (
         <div className="bg-card rounded-xl border border-border p-12 text-center">
           <ListChecks className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
           <h3 className="text-lg font-semibold mb-2">Nenhuma tarefa</h3>
           <p className="text-muted-foreground">
-            {canManage ? "Crie a primeira tarefa para começar." : "Você não tem tarefas atribuídas."}
+            {canManage ? "Crie projetos no Portfólio e adicione tarefas a eles." : "Você não tem tarefas atribuídas."}
           </p>
         </div>
       ) : (
-        <div className="space-y-3">
-          {filtered.map((task) => {
-            const overdue =
-              task.due_date && task.status !== "concluida" && new Date(task.due_date) < new Date();
+        <div className="space-y-6">
+          {groups.map((g) => {
+            const isCollapsed = collapsed[g.key];
+            const counts = {
+              a_fazer: g.tasks.filter(t => t.status === "a_fazer").length,
+              em_andamento: g.tasks.filter(t => t.status === "em_andamento").length,
+              concluida: g.tasks.filter(t => t.status === "concluida").length,
+            };
             return (
-              <div
-                key={task.id}
-                className={`bg-card rounded-xl border p-4 transition-colors ${
-                  task.status === "concluida"
-                    ? "border-border opacity-70"
-                    : "border-border hover:border-primary/40"
-                }`}
-              >
-                <div className="flex items-start gap-3">
-                  <Checkbox
-                    checked={task.status === "concluida"}
-                    onCheckedChange={() => toggleComplete(task)}
-                    className="mt-1"
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2 flex-wrap">
-                      <h4
-                        className={`font-semibold ${
-                          task.status === "concluida" ? "line-through text-muted-foreground" : ""
-                        }`}
-                      >
-                        {task.title}
-                      </h4>
-                      <div className="flex items-center gap-2">
-                        <Badge className={priorityColors[task.priority]}>
-                          <Flag className="h-3 w-3 mr-1" />
-                          {priorityLabels[task.priority]}
-                        </Badge>
-                        {canManage && (
-                          <Select
-                            value={task.status}
-                            onValueChange={(v) => updateStatus(task, v as TaskStatus)}
-                          >
-                            <SelectTrigger className="w-36 h-8">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent>
-                              <SelectItem value="a_fazer">A Fazer</SelectItem>
-                              <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                              <SelectItem value="concluida">Concluída</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        )}
-                        {canManage && (
-                          <Button size="icon" variant="ghost" onClick={() => deleteTask(task.id)}>
-                            <Trash2 className="h-4 w-4 text-destructive" />
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                    {task.description && (
-                      <p className="text-sm text-muted-foreground mt-1 whitespace-pre-wrap">
-                        {task.description}
-                      </p>
-                    )}
-                    <div className="flex items-center gap-4 mt-3 text-xs text-muted-foreground flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <UserIcon className="h-3 w-3" />
-                        {memberName(task.assigned_to)}
-                      </span>
-                      {task.due_date && (
-                        <span
-                          className={`flex items-center gap-1 ${
-                            overdue ? "text-destructive font-medium" : ""
-                          }`}
-                        >
-                          <Calendar className="h-3 w-3" />
-                          {formatDue(task.due_date)}
-                          {overdue && " (atrasada)"}
-                        </span>
-                      )}
-                      {!canManage && task.status !== "concluida" && (
-                        <Select
-                          value={task.status}
-                          onValueChange={(v) => updateStatus(task, v as TaskStatus)}
-                        >
-                          <SelectTrigger className="w-36 h-7 text-xs">
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="a_fazer">A Fazer</SelectItem>
-                            <SelectItem value="em_andamento">Em Andamento</SelectItem>
-                            <SelectItem value="concluida">Concluída</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      )}
-                    </div>
+              <div key={g.key} className="bg-card border border-border rounded-xl overflow-hidden">
+                <button
+                  onClick={() => toggle(g.key)}
+                  className="w-full flex items-center justify-between px-5 py-3 bg-muted/40 hover:bg-muted/60 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    <FolderKanban className="h-4 w-4 text-primary" />
+                    <span className="font-semibold">{g.name}</span>
+                    <span className="text-xs text-muted-foreground">({g.tasks.length})</span>
                   </div>
-                </div>
+                  <div className="flex items-center gap-2 text-xs">
+                    <Badge variant="outline">A fazer: {counts.a_fazer}</Badge>
+                    <Badge variant="outline">Em andamento: {counts.em_andamento}</Badge>
+                    <Badge variant="outline">Concluídas: {counts.concluida}</Badge>
+                  </div>
+                </button>
+
+                {!isCollapsed && (
+                  <div className="p-4">
+                    {g.tasks.length === 0 ? (
+                      <p className="text-sm text-muted-foreground text-center py-6">Nenhuma tarefa neste projeto.</p>
+                    ) : (
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {(["a_fazer", "em_andamento", "concluida"] as TaskStatus[]).map((col) => (
+                          <div key={col} className="bg-muted/20 rounded-lg p-3 min-h-[120px]">
+                            <div className="flex items-center gap-2 mb-3 px-1">
+                              <span className={`h-2 w-2 rounded-full ${statusColors[col]}`} />
+                              <h5 className="text-sm font-semibold">{statusLabels[col]}</h5>
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {g.tasks.filter(t => t.status === col).length}
+                              </span>
+                            </div>
+                            <div className="space-y-2">
+                              {g.tasks.filter(t => t.status === col).map((task) => {
+                                const overdue = task.due_date && task.status !== "concluida" && new Date(task.due_date) < new Date();
+                                return (
+                                  <div key={task.id} className="bg-card border border-border rounded-md p-3 hover:border-primary/40 transition-colors group">
+                                    <div className="flex items-start gap-2">
+                                      <Checkbox
+                                        checked={task.status === "concluida"}
+                                        onCheckedChange={() => toggleComplete(task)}
+                                        className="mt-0.5"
+                                      />
+                                      <div className="flex-1 min-w-0">
+                                        <p className={`text-sm font-medium ${task.status === "concluida" ? "line-through text-muted-foreground" : ""}`}>
+                                          {task.title}
+                                        </p>
+                                        {task.description && (
+                                          <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
+                                        )}
+                                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                          <Badge className={`${priorityColors[task.priority]} text-[10px] py-0 h-4`}>
+                                            <Flag className="h-2.5 w-2.5 mr-0.5" />
+                                            {priorityLabels[task.priority]}
+                                          </Badge>
+                                          <span className="inline-flex items-center gap-1 text-[11px] text-muted-foreground">
+                                            <UserIcon className="h-3 w-3" /> {memberName(task.assigned_to)}
+                                          </span>
+                                          {task.due_date && (
+                                            <span className={`inline-flex items-center gap-1 text-[11px] ${overdue ? "text-destructive font-medium" : "text-muted-foreground"}`}>
+                                              <Calendar className="h-3 w-3" /> {formatDue(task.due_date)}
+                                            </span>
+                                          )}
+                                        </div>
+                                        {(canManage || task.assigned_to === currentUserId) && (
+                                          <div className="flex items-center gap-1 mt-2">
+                                            <Select value={task.status} onValueChange={(v) => updateStatus(task, v as TaskStatus)}>
+                                              <SelectTrigger className="h-7 text-xs flex-1"><SelectValue /></SelectTrigger>
+                                              <SelectContent>
+                                                <SelectItem value="a_fazer">A Fazer</SelectItem>
+                                                <SelectItem value="em_andamento">Em Andamento</SelectItem>
+                                                <SelectItem value="concluida">Concluída</SelectItem>
+                                              </SelectContent>
+                                            </Select>
+                                            {canManage && (
+                                              <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => deleteTask(task.id)}>
+                                                <Trash2 className="h-3.5 w-3.5 text-destructive" />
+                                              </Button>
+                                            )}
+                                          </div>
+                                        )}
+                                      </div>
+                                    </div>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             );
           })}
