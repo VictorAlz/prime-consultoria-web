@@ -76,7 +76,11 @@ const MemberDashboard = () => {
     { icon: UserIcon, label: "Perfil", key: "perfil" },
   ];
 
-  const canManage = !!userRole && ["diretor", "presidencia", "admin"].includes(userRole);
+  const isAdmin = !!userRole && ["presidencia", "admin"].includes(userRole);
+  const canDelegate =
+    isAdmin ||
+    (!!projectRole && ["Coordenador de Projetos", "Delivery Manager", "Diretor de Projetos"].includes(projectRole));
+  const canManageHub = isAdmin || !!userRole && ["diretor"].includes(userRole);
 
   return (
     <div className="min-h-screen bg-background">
@@ -173,9 +177,11 @@ const MemberDashboard = () => {
           )}
 
           {activeTab === "tarefas" && <TasksPanel currentUserId={user.id} canManage={false} />}
-          {activeTab === "hub" && <ProjectsHubPanel currentUserId={user.id} canManage={canManage} />}
-          {activeTab === "portfolio" && <PortfolioHealthPanel currentUserId={user.id} canManage={canManage} />}
-          {activeTab === "wiki" && <KnowledgeBasePanel currentUserId={user.id} canManage={canManage} />}
+          {activeTab === "hub" && <ProjectsHubPanel currentUserId={user.id} canManage={canManageHub} />}
+          {activeTab === "portfolio" && (
+            <PortfolioHealthPanel currentUserId={user.id} isAdmin={isAdmin} canDelegate={canDelegate} />
+          )}
+          {activeTab === "wiki" && <KnowledgeBasePanel currentUserId={user.id} canManage={canManageHub} />}
 
           {activeTab === "perfil" && (
             <div className="max-w-md">
