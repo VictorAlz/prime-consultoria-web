@@ -468,7 +468,7 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                         {task.description && (
                                           <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{task.description}</p>
                                         )}
-                                        <div className="flex items-center gap-2 mt-2 flex-wrap">
+                                         <div className="flex items-center gap-2 mt-2 flex-wrap">
                                           <Badge className={`${priorityColors[task.priority]} text-[10px] py-0 h-4`}>
                                             <Flag className="h-2.5 w-2.5 mr-0.5" />
                                             {priorityLabels[task.priority]}
