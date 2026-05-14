@@ -510,8 +510,17 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                             className="h-7 text-xs flex-1"
                                             onClick={() => setOpenTask(task)}
                                           >
-                                            <Pencil className="h-3 w-3 mr-1" />
-                                            {canManage ? "Abrir / Editar" : "Abrir"}
+                                            {canManage ? (
+                                              <>
+                                                <Pencil className="h-3 w-3 mr-1" />
+                                                Editar
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Eye className="h-3 w-3 mr-1" />
+                                                Ver
+                                              </>
+                                            )}
                                           </Button>
                                           {canManage && (
                                             <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => deleteTask(task.id)}>
