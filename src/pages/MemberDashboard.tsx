@@ -155,15 +155,15 @@ const MemberDashboard = () => {
                 Este é seu espaço como membro da CASE EJ.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div
-                  className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/50 transition-colors"
-                  onClick={() => setActiveTab("tarefas")}
-                >
+                <div className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/50 transition-colors flex flex-col">
                   <ListChecks className="h-8 w-8 text-primary mb-3" />
                   <h3 className="font-semibold mb-1">Minhas Tarefas</h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground flex-1">
                     Veja o que foi delegado para você.
                   </p>
+                  <Button size="sm" variant="outline" className="mt-4 w-full" onClick={() => setActiveTab("tarefas")}>
+                    Ver tarefas
+                  </Button>
                 </div>
                 <div
                   className="bg-card rounded-xl border border-border p-6 cursor-pointer hover:border-primary/50 transition-colors"

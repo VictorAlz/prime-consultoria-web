@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight, Pencil } from "lucide-react";
+import { Plus, Trash2, X, ListChecks, Calendar, User as UserIcon, Flag, FolderKanban, ChevronDown, ChevronRight, Pencil, Eye } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -510,8 +510,17 @@ const TasksPanel = ({ currentUserId, canManage }: TasksPanelProps) => {
                                             className="h-7 text-xs flex-1"
                                             onClick={() => setOpenTask(task)}
                                           >
-                                            <Pencil className="h-3 w-3 mr-1" />
-                                            {canManage ? "Abrir / Editar" : "Abrir"}
+                                            {canManage ? (
+                                              <>
+                                                <Pencil className="h-3 w-3 mr-1" />
+                                                Editar
+                                              </>
+                                            ) : (
+                                              <>
+                                                <Eye className="h-3 w-3 mr-1" />
+                                                Ver
+                                              </>
+                                            )}
                                           </Button>
                                           {canManage && (
                                             <Button size="icon" variant="ghost" className="h-7 w-7" onClick={() => deleteTask(task.id)}>
