@@ -47,6 +47,10 @@ const Footer = () => {
                 <span>(22) 99946-4910</span>
               </div>
               <div className="flex items-center space-x-2">
+                <Phone className="h-5 w-5 flex-shrink-0" />
+                <span>+55 (22) 99944-3332</span>
+              </div>
+              <div className="flex items-center space-x-2">
                 <Mail className="h-5 w-5 flex-shrink-0" />
                 <span>contato@caseej.com</span>
               </div>
