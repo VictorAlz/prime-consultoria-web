@@ -12,11 +12,14 @@ import {
   Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
-  ArrowLeft, Plus, Copy, Trash2, Download, MessageCircle, FileText,
+  ArrowLeft, Plus, Copy, Trash2, Download, MessageCircle, FileText, Pencil,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
 import { generateContractPdf } from "@/lib/contractPdf";
+import { formatBRL } from "@/lib/contractConfig";
 
 const PUBLIC_BASE_URL = "https://caseej.com";
 const buildContractUrl = (token: string) =>
@@ -30,6 +33,7 @@ interface Contract {
   client_document: string | null;
   client_address: string | null;
   client_signature: string | null;
+  contract_value: number | null;
   status: "pending" | "signed";
   signed_at: string | null;
   created_at: string;
@@ -42,6 +46,12 @@ export default function ContractsAdmin() {
   const [linkDialog, setLinkDialog] = useState<{ open: boolean; url: string }>({
     open: false, url: "",
   });
+  const [valueDialog, setValueDialog] = useState<{
+    open: boolean;
+    mode: "create" | "edit";
+    contractId?: string;
+    value: string;
+  }>({ open: false, mode: "create", value: "" });
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -64,20 +74,60 @@ export default function ContractsAdmin() {
     setLoading(false);
   }
 
-  async function createNew() {
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data, error } = await supabase
-      .from("contracts")
-      .insert({ created_by: user?.id })
-      .select()
-      .single();
-    if (error || !data) {
-      toast({ title: "Erro", description: error?.message, variant: "destructive" });
+  function openCreate() {
+    setValueDialog({ open: true, mode: "create", value: "" });
+  }
+
+  function openEditValue(c: Contract) {
+    setValueDialog({
+      open: true,
+      mode: "edit",
+      contractId: c.id,
+      value: c.contract_value != null ? String(c.contract_value) : "",
+    });
+  }
+
+  function parseValue(raw: string): number | null {
+    const cleaned = raw.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+    if (!cleaned) return null;
+    const n = Number(cleaned);
+    return isNaN(n) ? null : n;
+  }
+
+  async function confirmValueDialog() {
+    const value = parseValue(valueDialog.value);
+    if (value == null || value <= 0) {
+      toast({ title: "Informe um valor válido", variant: "destructive" });
       return;
     }
-    const url = buildContractUrl(data.token);
-    setLinkDialog({ open: true, url });
-    load();
+    if (valueDialog.mode === "create") {
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data, error } = await supabase
+        .from("contracts")
+        .insert({ created_by: user?.id, contract_value: value })
+        .select()
+        .single();
+      if (error || !data) {
+        toast({ title: "Erro", description: error?.message, variant: "destructive" });
+        return;
+      }
+      const url = buildContractUrl(data.token);
+      setValueDialog({ open: false, mode: "create", value: "" });
+      setLinkDialog({ open: true, url });
+      load();
+    } else if (valueDialog.contractId) {
+      const { error } = await supabase
+        .from("contracts")
+        .update({ contract_value: value })
+        .eq("id", valueDialog.contractId);
+      if (error) {
+        toast({ title: "Erro", description: error.message, variant: "destructive" });
+        return;
+      }
+      setValueDialog({ open: false, mode: "edit", value: "" });
+      toast({ title: "Valor atualizado!" });
+      load();
+    }
   }
 
   async function remove(id: string) {
@@ -117,7 +167,7 @@ export default function ContractsAdmin() {
             <ArrowLeft className="h-4 w-4 mr-2" /> Voltar
           </Button>
           <h1 className="text-2xl font-bold">Painel de Contratos</h1>
-          <Button onClick={createNew}>
+          <Button onClick={openCreate}>
             <Plus className="h-4 w-4 mr-2" /> Novo Contrato
           </Button>
         </div>
@@ -140,6 +190,7 @@ export default function ContractsAdmin() {
                     <TableRow>
                       <TableHead>Data</TableHead>
                       <TableHead>Cliente</TableHead>
+                      <TableHead>Valor</TableHead>
                       <TableHead>Status</TableHead>
                       <TableHead className="text-right">Ações</TableHead>
                     </TableRow>
@@ -152,6 +203,11 @@ export default function ContractsAdmin() {
                           <TableCell>{new Date(c.issue_date).toLocaleDateString("pt-BR")}</TableCell>
                           <TableCell>{c.client_name || <span className="text-muted-foreground">—</span>}</TableCell>
                           <TableCell>
+                            {c.contract_value != null
+                              ? formatBRL(Number(c.contract_value))
+                              : <span className="text-muted-foreground">—</span>}
+                          </TableCell>
+                          <TableCell>
                             {c.status === "signed" ? (
                               <Badge className="bg-green-600">Assinado</Badge>
                             ) : (
@@ -160,6 +216,9 @@ export default function ContractsAdmin() {
                           </TableCell>
                           <TableCell className="text-right">
                             <div className="flex gap-1 justify-end flex-wrap">
+                              <Button size="sm" variant="outline" onClick={() => openEditValue(c)} title="Editar valor">
+                                <Pencil className="h-4 w-4" />
+                              </Button>
                               <Button size="sm" variant="outline" onClick={() => copyLink(url)} title="Copiar link">
                                 <Copy className="h-4 w-4" />
                               </Button>
