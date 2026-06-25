@@ -95,6 +95,9 @@ const MemberDashboard = () => {
           </div>
           <div className="flex items-center gap-4">
             <span className="text-sm text-muted-foreground hidden sm:block">{user.email}</span>
+            <Button variant="outline" size="sm" onClick={() => navigate("/contratos")}>
+              Contratos
+            </Button>
             {userRole && ["diretor", "presidencia", "admin"].includes(userRole) && (
               <Button variant="outline" size="sm" onClick={() => navigate("/admin/dashboard")}>
                 <Shield className="h-4 w-4 mr-2" />
