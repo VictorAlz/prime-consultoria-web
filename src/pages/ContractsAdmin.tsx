@@ -71,7 +71,7 @@ export default function ContractsAdmin() {
       toast({ title: "Erro", description: error?.message, variant: "destructive" });
       return;
     }
-    const url = `${window.location.origin}/contrato/${data.token}`;
+    const url = buildContractUrl(data.token);
     setLinkDialog({ open: true, url });
     load();
   }
