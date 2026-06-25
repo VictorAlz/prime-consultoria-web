@@ -4,7 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { User, Session } from "@supabase/supabase-js";
-import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks, Shield, Activity, BookOpen } from "lucide-react";
+import { LogOut, User as UserIcon, LayoutDashboard, Briefcase, ListChecks, Shield, Activity, BookOpen, FileText } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import TasksPanel from "@/components/admin/TasksPanel";
 import ProjectsHubPanel from "@/components/admin/ProjectsHubPanel";
@@ -75,6 +75,7 @@ const MemberDashboard = () => {
     { icon: Briefcase, label: "Hub de Projetos", key: "hub" },
     { icon: BookOpen, label: "Wiki", key: "wiki" },
     { icon: UserIcon, label: "Perfil", key: "perfil" },
+    { icon: FileText, label: "Contratos", key: "contratos", route: "/contratos" },
   ];
 
   const isAdmin = userRole === "admin";
@@ -117,7 +118,7 @@ const MemberDashboard = () => {
             {menuItems.map((item) => (
               <button
                 key={item.key}
-                onClick={() => setActiveTab(item.key)}
+                onClick={() => (item as any).route ? navigate((item as any).route) : setActiveTab(item.key)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                   activeTab === item.key
                     ? "bg-primary text-primary-foreground"
@@ -136,7 +137,7 @@ const MemberDashboard = () => {
             {menuItems.map((item) => (
               <button
                 key={item.key}
-                onClick={() => setActiveTab(item.key)}
+                onClick={() => (item as any).route ? navigate((item as any).route) : setActiveTab(item.key)}
                 className={`flex flex-col items-center gap-1 p-2 rounded-lg ${
                   activeTab === item.key ? "text-primary" : "text-muted-foreground"
                 }`}
