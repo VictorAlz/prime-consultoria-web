@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      contracts: {
+        Row: {
+          client_address: string | null
+          client_document: string | null
+          client_name: string | null
+          client_signature: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          issue_date: string
+          signed_at: string | null
+          status: Database["public"]["Enums"]["contract_status"]
+          token: string
+          updated_at: string
+        }
+        Insert: {
+          client_address?: string | null
+          client_document?: string | null
+          client_name?: string | null
+          client_signature?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          issue_date?: string
+          signed_at?: string | null
+          status?: Database["public"]["Enums"]["contract_status"]
+          token?: string
+          updated_at?: string
+        }
+        Update: {
+          client_address?: string | null
+          client_document?: string | null
+          client_name?: string | null
+          client_signature?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          issue_date?: string
+          signed_at?: string | null
+          status?: Database["public"]["Enums"]["contract_status"]
+          token?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       leads: {
         Row: {
           created_at: string
@@ -428,6 +473,7 @@ export type Database = {
     }
     Enums: {
       app_role: "trainee" | "membro" | "diretor" | "presidencia" | "admin"
+      contract_status: "pending" | "signed"
       project_health: "verde" | "amarelo" | "vermelho"
       task_priority: "baixa" | "media" | "alta"
       task_status: "a_fazer" | "em_andamento" | "concluida"
@@ -559,6 +605,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["trainee", "membro", "diretor", "presidencia", "admin"],
+      contract_status: ["pending", "signed"],
       project_health: ["verde", "amarelo", "vermelho"],
       task_priority: ["baixa", "media", "alta"],
       task_status: ["a_fazer", "em_andamento", "concluida"],

@@ -3,7 +3,7 @@ import { useLocation } from "react-router-dom";
 
 const WhatsAppButton = () => {
   const { pathname } = useLocation();
-  const hiddenRoutes = ["/membro", "/admin/dashboard", "/admin/login", "/login", "/convite"];
+  const hiddenRoutes = ["/membro", "/admin/dashboard", "/admin/login", "/login", "/convite", "/contratos", "/contrato"];
   if (hiddenRoutes.some((r) => pathname.startsWith(r))) return null;
 
   const phone = "5522999443332";

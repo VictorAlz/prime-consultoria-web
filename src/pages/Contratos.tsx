@@ -73,7 +73,7 @@ const Contratos = () => {
         <div className="flex flex-col sm:flex-row gap-4">
           <Button
             size="lg"
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() => navigate("/contratos/admin")}
             className="h-14 px-8 text-base font-semibold text-white shadow-lg hover:opacity-95"
             style={{
               backgroundImage:

@@ -15,6 +15,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MemberDashboard from "./pages/MemberDashboard";
 import InviteAccept from "./pages/InviteAccept";
 import Contratos from "./pages/Contratos";
+import ContractsAdmin from "./pages/ContractsAdmin";
+import ContractSign from "./pages/ContractSign";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -37,6 +39,8 @@ const App = () => (
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/membro" element={<MemberDashboard />} />
           <Route path="/contratos" element={<Contratos />} />
+          <Route path="/contratos/admin" element={<ContractsAdmin />} />
+          <Route path="/contrato/:token" element={<ContractSign />} />
           <Route path="/convite/:token" element={<InviteAccept />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
