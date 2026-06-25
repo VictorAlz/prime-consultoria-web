@@ -152,7 +152,12 @@ export const ContractPreview = forwardRef<HTMLDivElement, Props>(
               <div style={{ borderTop: "1px solid #111", paddingTop: "2mm" }}>
                 <strong>{COMPANY.presidente}</strong>
                 <br />
-                <small>{COMPANY.razaoSocial} — CONTRATADA</small>
+                <small>Presidente — {COMPANY.razaoSocial} (CONTRATADA)</small>
+              </div>
+              <div style={{ marginTop: "8mm", borderTop: "1px solid #111", paddingTop: "2mm" }}>
+                <strong>{COMPANY.diretorProjetos}</strong>
+                <br />
+                <small>Diretor de Projetos — {COMPANY.razaoSocial} (CONTRATADA)</small>
               </div>
             </div>
 
