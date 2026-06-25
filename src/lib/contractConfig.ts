@@ -33,7 +33,7 @@ export const CONTRACT_TEMPLATE = {
     },
     {
       heading: "CLÁUSULA 5ª — DA REMUNERAÇÃO",
-      body: `Pelos serviços prestados, o(a) CONTRATANTE pagará à CONTRATADA o valor e nas condições estabelecidos na proposta comercial anexa, que integra este contrato para todos os fins de direito.`,
+      body: `Pelos serviços prestados, o(a) CONTRATANTE pagará à CONTRATADA o valor total de {{contract_value}}, nas condições estabelecidas na proposta comercial anexa, que integra este contrato para todos os fins de direito.`,
     },
     {
       heading: "CLÁUSULA 6ª — DA CONFIDENCIALIDADE",
@@ -72,4 +72,12 @@ export function maskCpfCnpj(value: string): string {
     .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
     .replace(/\.(\d{3})(\d)/, ".$1/$2")
     .replace(/(\d{4})(\d)/, "$1-$2");
+}
+
+export function formatBRL(value: number | null | undefined): string {
+  if (value == null || isNaN(Number(value))) return "";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Number(value));
 }

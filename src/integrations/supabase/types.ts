@@ -20,6 +20,7 @@ export type Database = {
           client_document: string | null
           client_name: string | null
           client_signature: string | null
+          contract_value: number | null
           created_at: string
           created_by: string | null
           id: string
@@ -34,6 +35,7 @@ export type Database = {
           client_document?: string | null
           client_name?: string | null
           client_signature?: string | null
+          contract_value?: number | null
           created_at?: string
           created_by?: string | null
           id?: string
@@ -48,6 +50,7 @@ export type Database = {
           client_document?: string | null
           client_name?: string | null
           client_signature?: string | null
+          contract_value?: number | null
           created_at?: string
           created_by?: string | null
           id?: string

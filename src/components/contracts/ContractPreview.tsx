@@ -4,6 +4,7 @@ import {
   CONTRACT_TEMPLATE,
   SIGNATURE_PRESIDENTE_SRC,
   formatDateExtenso,
+  formatBRL,
 } from "@/lib/contractConfig";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
   clientDocument?: string | null;
   clientAddress?: string | null;
   clientSignature?: string | null;
+  contractValue?: number | null;
   forPrint?: boolean;
 }
 
@@ -33,7 +35,7 @@ const Placeholder = ({ value, label }: { value?: string | null; label: string })
   );
 
 export const ContractPreview = forwardRef<HTMLDivElement, Props>(
-  ({ issueDate, clientName, clientDocument, clientAddress, clientSignature, forPrint }, ref) => {
+  ({ issueDate, clientName, clientDocument, clientAddress, clientSignature, contractValue, forPrint }, ref) => {
     const replaceVars = (text: string) => {
       const parts: (string | JSX.Element)[] = [];
       const regex = /\{\{(\w+)\}\}/g;
@@ -52,6 +54,14 @@ export const ContractPreview = forwardRef<HTMLDivElement, Props>(
           parts.push(<Placeholder key={key++} value={clientDocument} label="CPF/CNPJ" />);
         else if (v === "client_address")
           parts.push(<Placeholder key={key++} value={clientAddress} label="ENDEREÇO COMPLETO" />);
+        else if (v === "contract_value")
+          parts.push(
+            <Placeholder
+              key={key++}
+              value={contractValue != null ? formatBRL(contractValue) : null}
+              label="VALOR DO CONTRATO"
+            />
+          );
         else parts.push(match[0]);
         lastIdx = match.index + match[0].length;
       }

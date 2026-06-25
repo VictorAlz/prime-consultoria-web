@@ -9,6 +9,7 @@ interface ContractData {
   client_document?: string | null;
   client_address?: string | null;
   client_signature?: string | null;
+  contract_value?: number | null;
 }
 
 export async function generateContractPdf(contract: ContractData, filename = "contrato.pdf") {
@@ -27,6 +28,7 @@ export async function generateContractPdf(contract: ContractData, filename = "co
         clientDocument: contract.client_document,
         clientAddress: contract.client_address,
         clientSignature: contract.client_signature,
+        contractValue: contract.contract_value,
         forPrint: true,
       })
     );
