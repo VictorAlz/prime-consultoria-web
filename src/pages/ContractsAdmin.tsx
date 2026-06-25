@@ -264,6 +264,45 @@ export default function ContractsAdmin() {
             </div>
           </DialogContent>
         </Dialog>
+
+        <Dialog
+          open={valueDialog.open}
+          onOpenChange={(o) => setValueDialog({ ...valueDialog, open: o })}
+        >
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>
+                {valueDialog.mode === "create" ? "Novo contrato" : "Editar valor"}
+              </DialogTitle>
+              <DialogDescription>
+                Informe o valor total do contrato (R$). Ele aparecerá na cláusula de remuneração.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-2">
+              <Label>Valor (R$)</Label>
+              <Input
+                type="text"
+                inputMode="decimal"
+                placeholder="Ex: 5.000,00"
+                value={valueDialog.value}
+                onChange={(e) => setValueDialog({ ...valueDialog, value: e.target.value })}
+                autoFocus
+              />
+            </div>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setValueDialog({ ...valueDialog, open: false })}
+              >
+                Cancelar
+              </Button>
+              <Button onClick={confirmValueDialog} className="flex-1">
+                {valueDialog.mode === "create" ? "Criar contrato" : "Salvar"}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
     </div>
   );
