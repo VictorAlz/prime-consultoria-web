@@ -146,15 +146,10 @@ export const ContractPreview = forwardRef<HTMLDivElement, Props>(
             <div style={{ flex: 1, textAlign: "center" }}>
               <img
                 src={SIGNATURE_PRESIDENTE_SRC}
-                alt="Assinatura do Presidente"
+                alt="Assinatura do Diretor de Projetos"
                 style={{ height: "18mm", objectFit: "contain", marginBottom: "1mm" }}
               />
               <div style={{ borderTop: "1px solid #111", paddingTop: "2mm" }}>
-                <strong>{COMPANY.presidente}</strong>
-                <br />
-                <small>Presidente — {COMPANY.razaoSocial} (CONTRATADA)</small>
-              </div>
-              <div style={{ marginTop: "8mm", borderTop: "1px solid #111", paddingTop: "2mm" }}>
                 <strong>{COMPANY.diretorProjetos}</strong>
                 <br />
                 <small>Diretor de Projetos — {COMPANY.razaoSocial} (CONTRATADA)</small>
