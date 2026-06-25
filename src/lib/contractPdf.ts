@@ -1,6 +1,5 @@
 import { createRoot } from "react-dom/client";
 import { createElement } from "react";
-// @ts-expect-error - no types
 import html2pdf from "html2pdf.js";
 import { ContractPreview } from "@/components/contracts/ContractPreview";
 
@@ -36,7 +35,7 @@ export async function generateContractPdf(contract: ContractData, filename = "co
 
   const node = host.firstElementChild as HTMLElement;
 
-  await html2pdf()
+  await (html2pdf as any)()
     .set({
       margin: 0,
       filename,
