@@ -6,6 +6,7 @@ export const COMPANY = {
   endereco:
     "Rod. Amaral Peixoto, Km 164, Imboassica, Macaé - RJ, CEP 27925-310 (FeMass)",
   presidente: "Victor Hugo",
+  diretorProjetos: "Victor Alves de Azevedo Aquino",
   cidade: "Macaé",
   uf: "RJ",
 };
