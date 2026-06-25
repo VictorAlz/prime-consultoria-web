@@ -33,7 +33,7 @@ export const CONTRACT_TEMPLATE = {
     },
     {
       heading: "CLÁUSULA 5ª — DA REMUNERAÇÃO",
-      body: `Pelos serviços prestados, o(a) CONTRATANTE pagará à CONTRATADA o valor e nas condições estabelecidos na proposta comercial anexa, que integra este contrato para todos os fins de direito.`,
+      body: `Pelos serviços prestados, o(a) CONTRATANTE pagará à CONTRATADA o valor total de {{contract_value}}, nas condições estabelecidas na proposta comercial anexa, que integra este contrato para todos os fins de direito.`,
     },
     {
       heading: "CLÁUSULA 6ª — DA CONFIDENCIALIDADE",
