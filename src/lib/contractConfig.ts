@@ -73,3 +73,11 @@ export function maskCpfCnpj(value: string): string {
     .replace(/\.(\d{3})(\d)/, ".$1/$2")
     .replace(/(\d{4})(\d)/, "$1-$2");
 }
+
+export function formatBRL(value: number | null | undefined): string {
+  if (value == null || isNaN(Number(value))) return "";
+  return new Intl.NumberFormat("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+  }).format(Number(value));
+}
