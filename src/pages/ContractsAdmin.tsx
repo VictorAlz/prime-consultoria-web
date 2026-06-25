@@ -18,6 +18,10 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { generateContractPdf } from "@/lib/contractPdf";
 
+const PUBLIC_BASE_URL = "https://caseej.com";
+const buildContractUrl = (token: string) =>
+  `${PUBLIC_BASE_URL}/contrato/${token}`;
+
 interface Contract {
   id: string;
   token: string;
@@ -71,7 +75,7 @@ export default function ContractsAdmin() {
       toast({ title: "Erro", description: error?.message, variant: "destructive" });
       return;
     }
-    const url = `${window.location.origin}/contrato/${data.token}`;
+    const url = buildContractUrl(data.token);
     setLinkDialog({ open: true, url });
     load();
   }
@@ -142,7 +146,7 @@ export default function ContractsAdmin() {
                   </TableHeader>
                   <TableBody>
                     {contracts.map((c) => {
-                      const url = `${window.location.origin}/contrato/${c.token}`;
+                      const url = buildContractUrl(c.token);
                       return (
                         <TableRow key={c.id}>
                           <TableCell>{new Date(c.issue_date).toLocaleDateString("pt-BR")}</TableCell>
