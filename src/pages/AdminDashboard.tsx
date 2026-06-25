@@ -27,6 +27,7 @@ import {
   Activity,
   BookOpen,
 } from "lucide-react";
+import { FileText } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -536,6 +537,7 @@ const AdminDashboard = () => {
     { icon: Shield, label: "Usuários", key: "usuarios", minRole: "admin" as AppRole },
     { icon: Settings, label: "Configurações", key: "configuracoes", minRole: "admin" as AppRole },
     { icon: UserIcon, label: "Perfil", key: "perfil", minRole: "trainee" as AppRole },
+    { icon: FileText, label: "Contratos", key: "contratos", minRole: "trainee" as AppRole, route: "/contratos" },
   ].filter(item => hasMinimumRole(item.minRole));
 
   const getServiceLabel = (type: string) => {
@@ -615,7 +617,7 @@ const AdminDashboard = () => {
             {menuItems.map((item) => (
               <button
                 key={item.key}
-                onClick={() => setActiveTab(item.key)}
+                onClick={() => (item as any).route ? navigate((item as any).route) : setActiveTab(item.key)}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-left transition-colors ${
                   activeTab === item.key
                     ? "bg-primary text-primary-foreground"
