@@ -56,13 +56,18 @@ const Solutions = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
+      <section className="pt-32 pb-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Nossos Serviços
+          <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.3em] text-primary-foreground/70">
+              <span className="h-px w-12 bg-primary-foreground/40" />
+              <span>O que fazemos</span>
+              <span className="h-px w-12 bg-primary-foreground/40" />
+            </div>
+            <h1 className="font-serif text-5xl md:text-7xl font-normal text-primary-foreground leading-[1.05]">
+              Nossos <em className="italic text-highlight">Serviços</em>
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/90">
+            <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
               Desenvolvemos soluções digitais sob medida para transformar suas
               ideias em produtos reais. Sites, aplicações web e automações com
               inteligência artificial.
@@ -91,9 +96,14 @@ const Solutions = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold">
-              Tem um Projeto em Mente?
+          <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="h-px w-10 bg-border" />
+              <span>Vamos começar</span>
+              <span className="h-px w-10 bg-border" />
+            </div>
+            <h2 className="font-serif text-4xl md:text-5xl font-normal leading-[1.1]">
+              Tem um <em className="italic text-highlight">projeto</em> em mente?
             </h2>
             <p className="text-lg text-muted-foreground">
               Conte-nos sua ideia e transformaremos em realidade. Desenvolvemos
@@ -101,7 +111,7 @@ const Solutions = () => {
             </p>
             <ContactDialog
               trigger={
-                <button className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
+                <button className="btn-highlight rounded-none px-8 py-4 font-mono text-xs uppercase tracking-[0.18em] inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all">
                   Solicitar Orçamento Gratuito
                 </button>
               }

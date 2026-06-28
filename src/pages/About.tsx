@@ -17,14 +17,19 @@ const About = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
+      <section className="pt-32 pb-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Sobre a CASE EJ
+          <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.3em] text-primary-foreground/70">
+              <span className="h-px w-12 bg-primary-foreground/40" />
+              <span>Quem somos</span>
+              <span className="h-px w-12 bg-primary-foreground/40" />
+            </div>
+            <h1 className="font-serif text-5xl md:text-7xl font-normal text-primary-foreground leading-[1.05]">
+              Sobre a <em className="italic text-highlight">CASE EJ</em>
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/90">
-              A primeira empresa júnior multidisciplinar de Macaé, formando 
+            <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
+              A primeira empresa júnior multidisciplinar de Macaé, formando
               profissionais através da experiência prática.
             </p>
           </div>
@@ -36,8 +41,12 @@ const About = () => {
         <div className="container-custom">
           <div className="max-w-4xl mx-auto space-y-8 animate-fade-in">
             <div className="prose prose-lg max-w-none">
-              <h2 className="text-3xl md:text-4xl font-bold mb-6">
-                Nossa História
+              <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
+                <span className="h-px w-10 bg-border" />
+                <span>Nossa trajetória</span>
+              </div>
+              <h2 className="font-serif text-4xl md:text-5xl font-normal mb-8 leading-[1.1]">
+                Nossa <em className="italic text-highlight">História</em>
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
                 A CASE EJ surgiu a partir da necessidade de experiência prática 
@@ -67,9 +76,10 @@ const About = () => {
       {/* Mission, Vision, Values */}
       <section className="section-padding bg-muted/20">
         <div className="container-custom">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
-            <div className="p-8 rounded-2xl bg-card shadow-sm animate-fade-in">
-              <h3 className="text-2xl font-bold mb-4 text-primary">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-px bg-border border border-border mb-16">
+            <div className="p-8 bg-card animate-fade-in">
+              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">01 / Missão</div>
+              <h3 className="font-serif text-3xl font-normal mb-4 text-primary">
                 Nossa Missão
               </h3>
               <p className="text-muted-foreground">
@@ -79,8 +89,9 @@ const About = () => {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-card shadow-sm animate-fade-in" style={{ animationDelay: "100ms" }}>
-              <h3 className="text-2xl font-bold mb-4 text-primary">
+            <div className="p-8 bg-card animate-fade-in" style={{ animationDelay: "100ms" }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">02 / Visão</div>
+              <h3 className="font-serif text-3xl font-normal mb-4 text-primary">
                 Nossa Visão
               </h3>
               <p className="text-muted-foreground">
@@ -90,8 +101,9 @@ const About = () => {
               </p>
             </div>
 
-            <div className="p-8 rounded-2xl bg-card shadow-sm animate-fade-in" style={{ animationDelay: "200ms" }}>
-              <h3 className="text-2xl font-bold mb-4 text-primary">
+            <div className="p-8 bg-card animate-fade-in" style={{ animationDelay: "200ms" }}>
+              <div className="font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground mb-3">03 / Princípios</div>
+              <h3 className="font-serif text-3xl font-normal mb-4 text-primary">
                 Nossos Princípios
               </h3>
               <p className="text-muted-foreground">
@@ -104,8 +116,13 @@ const About = () => {
 
           {/* Values List */}
           <div className="max-w-4xl mx-auto">
-            <h3 className="text-3xl font-bold mb-8 text-center">
-              Nossos Valores
+            <div className="flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4">
+              <span className="h-px w-10 bg-border" />
+              <span>Princípios que nos guiam</span>
+              <span className="h-px w-10 bg-border" />
+            </div>
+            <h3 className="font-serif text-4xl md:text-5xl font-normal mb-10 text-center leading-[1.1]">
+              Nossos <em className="italic text-highlight">Valores</em>
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {values.map((value, index) => (
