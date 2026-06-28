@@ -75,11 +75,18 @@ const Team = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
+      <section className="pt-32 pb-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">Nosso Time</h1>
-            <p className="text-lg md:text-xl text-primary-foreground/90">
+          <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.3em] text-primary-foreground/70">
+              <span className="h-px w-12 bg-primary-foreground/40" />
+              <span>Quem faz acontecer</span>
+              <span className="h-px w-12 bg-primary-foreground/40" />
+            </div>
+            <h1 className="font-serif text-5xl md:text-7xl font-normal text-primary-foreground leading-[1.05]">
+              Nosso <em className="italic text-highlight">Time</em>
+            </h1>
+            <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
               Conheça os profissionais excepcionais que tornam possível a transformação dos nossos clientes.
             </p>
           </div>
@@ -138,8 +145,8 @@ const Team = () => {
 
                   <CardContent className="p-6 space-y-4">
                     <div>
-                      <h3 className="text-2xl font-bold">{member.name}</h3>
-                      <p className="text-highlight font-medium">{member.role}</p>
+                      <h3 className="font-serif text-2xl font-normal">{member.name}</h3>
+                      <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-highlight mt-1">{member.role}</p>
                     </div>
                     {member.bio && <p className="text-muted-foreground">{member.bio}</p>}
 
@@ -177,9 +184,16 @@ const Team = () => {
       {/* CTA Section */}
       <section className="py-20 bg-gradient-to-br from-muted/30 to-muted/10">
         <div className="container-custom">
-          <div className="max-w-3xl mx-auto text-center space-y-6 animate-fade-in">
-            <h2 className="text-3xl md:text-4xl font-bold">Junte-se ao Nosso Time</h2>
-            
+          <div className="max-w-3xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-3 font-mono text-xs uppercase tracking-[0.3em] text-muted-foreground">
+              <span className="h-px w-10 bg-border" />
+              <span>Faça parte</span>
+              <span className="h-px w-10 bg-border" />
+            </div>
+            <h2 className="font-serif text-4xl md:text-5xl font-normal leading-[1.1]">
+              Junte-se ao <em className="italic text-highlight">nosso time</em>
+            </h2>
+
             {loading ? (
               <div className="animate-pulse h-20 bg-muted rounded-lg"></div>
             ) : psSettings?.active ? (
@@ -188,7 +202,7 @@ const Team = () => {
                   {psSettings.description || "Estamos com processo seletivo aberto! Se você é apaixonado por tecnologia e transformação, queremos conhecê-lo."}
                 </p>
                 <Button
-                  className="btn-highlight rounded-full px-8 py-4 text-lg font-medium inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+                  className="btn-highlight rounded-none px-8 py-4 font-mono text-xs uppercase tracking-[0.18em] inline-flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
                   onClick={() => window.open(psSettings.form_url, "_blank")}
                 >
                   Ver Oportunidades

@@ -67,13 +67,18 @@ const Cases = () => {
       <Header />
 
       {/* Hero Section */}
-      <section className="pt-32 pb-20 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
+      <section className="pt-32 pb-24 bg-gradient-to-br from-primary via-primary/95 to-primary/90">
         <div className="container-custom">
-          <div className="max-w-4xl mx-auto text-center space-y-6 animate-fade-in">
-            <h1 className="text-4xl md:text-6xl font-bold text-primary-foreground">
-              Cases de Sucesso
+          <div className="max-w-4xl mx-auto text-center space-y-8 animate-fade-in">
+            <div className="flex items-center justify-center gap-4 font-mono text-xs uppercase tracking-[0.3em] text-primary-foreground/70">
+              <span className="h-px w-12 bg-primary-foreground/40" />
+              <span>Portfólio</span>
+              <span className="h-px w-12 bg-primary-foreground/40" />
+            </div>
+            <h1 className="font-serif text-5xl md:text-7xl font-normal text-primary-foreground leading-[1.05]">
+              Cases de <em className="italic text-highlight">Sucesso</em>
             </h1>
-            <p className="text-lg md:text-xl text-primary-foreground/90">
+            <p className="text-lg md:text-xl text-primary-foreground/80 max-w-2xl mx-auto">
               Conheça os projetos que transformaram negócios e geraram
               resultados extraordinários em diversos setores.
             </p>
@@ -84,7 +89,7 @@ const Cases = () => {
       {/* Filter Section */}
       <section className="py-12 border-b">
         <div className="container-custom">
-          <div className="flex flex-wrap gap-3 justify-center">
+          <div className="flex flex-wrap gap-2 justify-center">
             {categories.map((category) => (
               <Button
                 key={category}
@@ -92,8 +97,8 @@ const Cases = () => {
                 onClick={() => setSelectedCategory(category)}
                 className={
                   selectedCategory === category
-                    ? "btn-primary rounded-full"
-                    : "rounded-full"
+                    ? "btn-primary rounded-none font-mono text-xs uppercase tracking-[0.18em]"
+                    : "rounded-none font-mono text-xs uppercase tracking-[0.18em]"
                 }
               >
                 {category}
