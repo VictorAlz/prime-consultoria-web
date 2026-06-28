@@ -137,7 +137,7 @@ const Hero = () => {
             Consultoria · Tecnologia · FeMASS
           </div>
 
-          <h1 className="font-serif uppercase text-primary-foreground leading-[0.95] tracking-tight text-[2.6rem] sm:text-6xl md:text-7xl lg:text-8xl xl:text-[9rem] font-normal">
+          <h1 className="font-serif uppercase text-primary-foreground leading-[0.95] tracking-tight text-[2rem] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[6.5rem] font-normal">
             Ideias que<br />
             viram <em className="not-italic text-accent">software</em><br />
             de verdade.
