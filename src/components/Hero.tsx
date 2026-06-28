@@ -18,7 +18,7 @@ const Hero = () => {
           }}
         />
         <HeaderGraphBackground />
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-primary/60 to-primary/85" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/55 via-primary/25 to-primary/60 pointer-events-none" />
       </div>
 
       {/* Content — editorial left-aligned hero */}
