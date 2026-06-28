@@ -3,7 +3,6 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import ContactDialog from "@/components/ContactDialog";
-import HeaderGraphBackground from "@/components/HeaderGraphBackground";
 import logoAsset from "@/assets/case-logo-descritivo.png.asset.json";
 const logo = logoAsset.url;
 
@@ -52,11 +51,10 @@ const Header = () => {
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-md overflow-hidden`}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 shadow-md`}
       style={{ backgroundColor: '#4a2281' }}
     >
-      <HeaderGraphBackground />
-      <nav className="container-custom relative z-10">
+      <nav className="container-custom">
         {/* Desktop: nav-left | logo center | nav-right */}
         <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] items-center h-24 gap-8">
           <div className="flex items-center justify-start gap-8">
