@@ -47,17 +47,24 @@ const Index = () => {
       <HistorySection />
 
       {/* Cases em Destaque */}
-      <section className="section-padding">
+      <section className="section-padding bg-background border-t border-border">
         <div className="container-custom">
-          <div className="text-center space-y-4 mb-16 animate-fade-in">
-            <h2 className="text-4xl md:text-5xl font-bold">Cases de Sucesso</h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <div className="mb-16 md:mb-24 max-w-5xl animate-fade-in">
+            <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-highlight flex items-center gap-3 mb-6">
+              <span className="inline-block h-px w-8 bg-highlight/60" />
+              Projetos selecionados
+            </div>
+            <h2 className="font-serif uppercase text-foreground leading-[0.95] tracking-tight text-4xl md:text-6xl lg:text-7xl font-normal mb-8">
+              Cases de<br />
+              <em className="not-italic text-highlight">sucesso</em>.
+            </h2>
+            <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed tracking-wide">
               Conheça alguns dos projetos que transformaram negócios e geraram
               resultados excepcionais.
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
             {featuredCases.map((caseItem, index) => (
               <div
                 key={index}
@@ -69,14 +76,14 @@ const Index = () => {
             ))}
           </div>
 
-          <div className="text-center animate-fade-in">
+          <div className="animate-fade-in border-t border-border pt-10">
             <Link to="/cases">
               <Button
                 size="lg"
-                className="btn-primary rounded-full px-8 group"
+                className="rounded-none font-mono text-xs tracking-[0.2em] uppercase px-7 py-6 bg-primary text-primary-foreground hover:bg-primary/90 group"
               >
-                Ver Todos os Cases
-                <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                Ver todos os cases
+                <ArrowRight className="ml-3 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
             </Link>
           </div>
