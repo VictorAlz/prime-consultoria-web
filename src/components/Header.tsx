@@ -56,7 +56,7 @@ const Header = () => {
     >
       <nav className="container-custom">
         {/* Desktop: nav-left | logo center | nav-right */}
-        <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-8">
+        <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] items-center h-28 gap-8">
           <div className="flex items-center justify-start gap-8">
             {leftLinks.map((link) => (
               <Link key={link.path} to={link.path} className={linkClass(link.path)}>
@@ -73,7 +73,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-20 md:h-24 w-auto object-contain invert brightness-0 scale-150 origin-center"
+              className="h-32 md:h-40 w-auto object-contain invert brightness-0 scale-[2] origin-center"
             />
           </Link>
 
@@ -94,7 +94,7 @@ const Header = () => {
         </div>
 
         {/* Mobile: logo center, menu button right */}
-        <div className="lg:hidden flex items-center justify-between h-20">
+        <div className="lg:hidden flex items-center justify-between h-24">
           <div className="w-10" />
           <Link
             to="/"
@@ -104,7 +104,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-16 w-auto object-contain invert brightness-0 scale-125 origin-center"
+              className="h-24 w-auto object-contain invert brightness-0 scale-150 origin-center"
             />
           </Link>
           <button
