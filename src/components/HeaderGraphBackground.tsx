@@ -27,14 +27,14 @@ const HeaderGraphBackground = () => {
     const isMobile = () => window.innerWidth < 768;
 
     const seedNodes = () => {
-      const count = isMobile() ? 38 : 90;
+      const count = isMobile() ? 55 : 140;
       nodes = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.3,
-        vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.6 + 1,
-        pink: Math.random() < 0.18,
+        vx: (Math.random() - 0.5) * 0.7,
+        vy: (Math.random() - 0.5) * 0.7,
+        r: Math.random() * 1.8 + 1.2,
+        pink: Math.random() < 0.22,
       }));
     };
 
@@ -65,11 +65,12 @@ const HeaderGraphBackground = () => {
     window.addEventListener("mousemove", onMove);
     window.addEventListener("mouseout", onLeave);
 
-    const accent = "117, 218, 246"; // #75DAF6
-    const highlight = "215, 83, 115"; // #D75373
+    const accent = "160, 235, 255";    // brighter cyan
+    const highlight = "255, 130, 170"; // brighter pink
     const white = "255, 255, 255";
-    const linkDist = () => (isMobile() ? 95 : 140);
-    const mouseRadius = () => (isMobile() ? 120 : 180);
+    const linkDist = () => (isMobile() ? 130 : 180);
+    const mouseRadius = () => (isMobile() ? 130 : 200);
+    const NEAREST_K = 3; // always connect each node to its K nearest neighbors → "second brain"
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -82,17 +83,21 @@ const HeaderGraphBackground = () => {
           const dy = n.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < mr && dist > 0.001) {
-            const force = (1 - dist / mr) * 0.6;
-            n.vx += (dx / dist) * force * 0.08;
-            n.vy += (dy / dist) * force * 0.08;
+            const force = (1 - dist / mr) * 0.9;
+            n.vx += (dx / dist) * force * 0.12;
+            n.vy += (dy / dist) * force * 0.12;
           }
         }
-        // friction
-        n.vx *= 0.96;
-        n.vy *= 0.96;
+        // light friction (keep them moving)
+        n.vx *= 0.99;
+        n.vy *= 0.99;
         // baseline drift to keep things alive
-        n.vx += (Math.random() - 0.5) * 0.015;
-        n.vy += (Math.random() - 0.5) * 0.015;
+        n.vx += (Math.random() - 0.5) * 0.05;
+        n.vy += (Math.random() - 0.5) * 0.05;
+        // clamp top speed
+        const sp = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
+        const maxSp = 1.1;
+        if (sp > maxSp) { n.vx = (n.vx / sp) * maxSp; n.vy = (n.vy / sp) * maxSp; }
 
         n.x += n.vx;
         n.y += n.vy;
@@ -102,8 +107,10 @@ const HeaderGraphBackground = () => {
         if (n.y > height) { n.y = height; n.vy *= -1; }
       }
 
-      // Edges node↔node
+      // Edges node↔node (distance-based web)
       const max = linkDist();
+      // Track distances for nearest-K pass
+      const dists: number[][] = nodes.map(() => []);
       for (let i = 0; i < nodes.length; i++) {
         for (let j = i + 1; j < nodes.length; j++) {
           const a = nodes[i];
@@ -111,16 +118,40 @@ const HeaderGraphBackground = () => {
           const dx = a.x - b.x;
           const dy = a.y - b.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
+          dists[i].push(dist); dists[j].push(dist);
           if (dist < max) {
-            const alpha = (1 - dist / max) * 0.28;
+            const alpha = (1 - dist / max) * 0.55;
             const color = a.pink || b.pink ? highlight : accent;
             ctx.strokeStyle = `rgba(${color}, ${alpha})`;
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 1.1;
             ctx.beginPath();
             ctx.moveTo(a.x, a.y);
             ctx.lineTo(b.x, b.y);
             ctx.stroke();
           }
+        }
+      }
+
+      // Nearest-K edges — guarantees a continuously connected "second brain"
+      for (let i = 0; i < nodes.length; i++) {
+        const a = nodes[i];
+        const pairs: { j: number; d: number }[] = [];
+        for (let j = 0; j < nodes.length; j++) {
+          if (i === j) continue;
+          const dx = a.x - nodes[j].x;
+          const dy = a.y - nodes[j].y;
+          pairs.push({ j, d: Math.sqrt(dx * dx + dy * dy) });
+        }
+        pairs.sort((p, q) => p.d - q.d);
+        for (let k = 0; k < NEAREST_K && k < pairs.length; k++) {
+          const b = nodes[pairs[k].j];
+          const color = a.pink || b.pink ? highlight : accent;
+          ctx.strokeStyle = `rgba(${color}, 0.35)`;
+          ctx.lineWidth = 0.9;
+          ctx.beginPath();
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
         }
       }
 
@@ -145,17 +176,17 @@ const HeaderGraphBackground = () => {
       // Nodes (glow + core)
       for (const n of nodes) {
         const color = n.pink ? highlight : accent;
-        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 5);
-        grad.addColorStop(0, `rgba(${color}, 0.55)`);
+        const grad = ctx.createRadialGradient(n.x, n.y, 0, n.x, n.y, n.r * 7);
+        grad.addColorStop(0, `rgba(${color}, 0.75)`);
         grad.addColorStop(1, `rgba(${color}, 0)`);
         ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r * 5, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, n.r * 7, 0, Math.PI * 2);
         ctx.fill();
 
-        ctx.fillStyle = `rgba(${color}, 0.95)`;
+        ctx.fillStyle = `rgba(${white}, 1)`;
         ctx.beginPath();
-        ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+        ctx.arc(n.x, n.y, n.r + 0.4, 0, Math.PI * 2);
         ctx.fill();
       }
 
@@ -190,7 +221,7 @@ const HeaderGraphBackground = () => {
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden">
-      <canvas ref={canvasRef} className="w-full h-full block opacity-70" />
+      <canvas ref={canvasRef} className="w-full h-full block opacity-95" />
     </div>
   );
 };
