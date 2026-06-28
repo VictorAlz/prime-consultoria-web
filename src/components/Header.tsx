@@ -73,7 +73,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-12 md:h-14 w-auto object-contain invert brightness-0"
+              className="h-20 md:h-24 w-auto object-contain invert brightness-0 scale-150 origin-center"
             />
           </Link>
 
@@ -104,7 +104,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-12 w-auto object-contain invert brightness-0"
+              className="h-16 w-auto object-contain invert brightness-0 scale-125 origin-center"
             />
           </Link>
           <button
