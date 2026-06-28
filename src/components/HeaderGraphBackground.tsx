@@ -27,13 +27,13 @@ const HeaderGraphBackground = () => {
     const isMobile = () => window.innerWidth < 768;
 
     const seedNodes = () => {
-      const count = isMobile() ? 16 : 38;
+      const count = isMobile() ? 38 : 90;
       nodes = Array.from({ length: count }, () => ({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.25,
-        vy: (Math.random() - 0.5) * 0.25,
-        r: Math.random() * 1.4 + 1,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.6 + 1,
         pink: Math.random() < 0.18,
       }));
     };
@@ -68,8 +68,8 @@ const HeaderGraphBackground = () => {
     const accent = "117, 218, 246"; // #75DAF6
     const highlight = "215, 83, 115"; // #D75373
     const white = "255, 255, 255";
-    const linkDist = () => (isMobile() ? 90 : 130);
-    const mouseRadius = () => (isMobile() ? 110 : 170);
+    const linkDist = () => (isMobile() ? 95 : 140);
+    const mouseRadius = () => (isMobile() ? 120 : 180);
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
