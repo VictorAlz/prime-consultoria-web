@@ -35,40 +35,40 @@ const HistorySection = () => {
   ];
 
   return (
-    <section className="section-padding bg-gradient-to-b from-background to-muted/20">
+    <section className="section-padding bg-background">
       <div className="container-custom">
-        <div className="text-center space-y-4 mb-16 animate-fade-in">
-          <h2 className="text-4xl md:text-5xl font-bold">
-            Muitos Anos de História
+        <div className="mb-16 md:mb-24 max-w-5xl animate-fade-in">
+          <div className="font-mono text-[11px] tracking-[0.25em] uppercase text-highlight flex items-center gap-3 mb-6">
+            <span className="inline-block h-px w-8 bg-highlight/60" />
+            Desde 2012
+          </div>
+          <h2 className="font-serif uppercase text-foreground leading-[0.95] tracking-tight text-4xl md:text-6xl lg:text-7xl font-normal mb-8">
+            Muitos anos<br />
+            de <em className="not-italic text-highlight">história</em>.
           </h2>
-          <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-xl leading-relaxed tracking-wide">
             Uma trajetória marcada por crescimento sustentável, inovação
             constante e resultados extraordinários para nossos clientes.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-px bg-border border border-border">
           {milestones.map((milestone, index) => (
             <div
               key={index}
-              className="relative group animate-fade-in"
+              className="relative group bg-background p-8 animate-fade-in hover:bg-muted/30 transition-colors duration-500"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="p-6 rounded-2xl bg-card border border-border shadow-sm hover:shadow-lg transition-all duration-300 card-hover">
-                <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                  <milestone.icon className="h-8 w-8 text-primary" />
-                </div>
-                <div className="text-3xl font-bold text-highlight mb-2">
-                  {milestone.year}
-                </div>
-                <h3 className="text-xl font-semibold mb-2">{milestone.title}</h3>
-                <p className="text-muted-foreground">{milestone.description}</p>
+              <milestone.icon className="h-6 w-6 text-highlight mb-8" strokeWidth={1.25} />
+              <div className="font-serif text-5xl md:text-6xl text-foreground leading-none mb-4">
+                {milestone.year}
               </div>
-
-              {/* Connecting Line (hidden on last item) */}
-              {index < milestones.length - 1 && (
-                <div className="hidden lg:block absolute top-1/2 -right-4 w-8 h-0.5 bg-border"></div>
-              )}
+              <div className="font-mono text-[10px] tracking-[0.25em] uppercase text-highlight mb-3">
+                {milestone.title}
+              </div>
+              <p className="font-mono text-xs text-muted-foreground leading-relaxed">
+                {milestone.description}
+              </p>
             </div>
           ))}
         </div>
