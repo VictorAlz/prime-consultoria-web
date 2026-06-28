@@ -25,6 +25,9 @@ const HeaderGraphBackground = () => {
     const mouse = { x: -9999, y: -9999, active: false };
 
     const isMobile = () => window.innerWidth < 768;
+    const isTouch = () =>
+      typeof window !== "undefined" &&
+      (("ontouchstart" in window) || (navigator.maxTouchPoints ?? 0) > 0);
 
     const seedNodes = () => {
       const count = isMobile() ? 55 : 140;
@@ -52,6 +55,7 @@ const HeaderGraphBackground = () => {
     window.addEventListener("resize", resize);
 
     const onMove = (e: MouseEvent) => {
+      if (isTouch()) return; // ignore pointer interaction on touch devices
       const rect = canvas.getBoundingClientRect();
       mouse.x = e.clientX - rect.left;
       mouse.y = e.clientY - rect.top;
@@ -62,8 +66,10 @@ const HeaderGraphBackground = () => {
       mouse.x = -9999;
       mouse.y = -9999;
     };
-    window.addEventListener("mousemove", onMove);
-    window.addEventListener("mouseout", onLeave);
+    if (!isTouch()) {
+      window.addEventListener("mousemove", onMove);
+      window.addEventListener("mouseout", onLeave);
+    }
 
     const accent = "160, 235, 255";    // brighter cyan
     const highlight = "255, 130, 170"; // brighter pink
@@ -83,20 +89,20 @@ const HeaderGraphBackground = () => {
           const dy = n.y - mouse.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
           if (dist < mr && dist > 0.001) {
-            const force = (1 - dist / mr) * 0.9;
-            n.vx += (dx / dist) * force * 0.12;
-            n.vy += (dy / dist) * force * 0.12;
+            const force = (1 - dist / mr) * 0.6;
+            n.vx += (dx / dist) * force * 0.07;
+            n.vy += (dy / dist) * force * 0.07;
           }
         }
-        // light friction (keep them moving)
-        n.vx *= 0.99;
-        n.vy *= 0.99;
+        // friction
+        n.vx *= 0.97;
+        n.vy *= 0.97;
         // baseline drift to keep things alive
-        n.vx += (Math.random() - 0.5) * 0.05;
-        n.vy += (Math.random() - 0.5) * 0.05;
-        // clamp top speed
+        n.vx += (Math.random() - 0.5) * 0.025;
+        n.vy += (Math.random() - 0.5) * 0.025;
+        // clamp top speed (lower on mobile to avoid jitter)
         const sp = Math.sqrt(n.vx * n.vx + n.vy * n.vy);
-        const maxSp = 1.1;
+        const maxSp = isMobile() ? 0.45 : 0.9;
         if (sp > maxSp) { n.vx = (n.vx / sp) * maxSp; n.vy = (n.vy / sp) * maxSp; }
 
         n.x += n.vx;
