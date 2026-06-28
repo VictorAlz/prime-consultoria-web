@@ -37,6 +37,15 @@ const Header = () => {
     { name: "Nosso Time", path: "/equipe" },
   ];
 
+  const half = Math.ceil(navLinks.length / 2);
+  const leftLinks = navLinks.slice(0, half);
+  const rightLinks = navLinks.slice(half);
+
+  const linkClass = (path: string) =>
+    `font-mono text-xs uppercase tracking-[0.18em] transition-colors ${
+      isActive(path) ? "text-white" : "text-white/70 hover:text-white"
+    }`;
+
   const isActive = (path: string) => location.pathname === path;
 
   return (
@@ -45,47 +54,60 @@ const Header = () => {
       style={{ backgroundColor: '#4a2281' }}
     >
       <nav className="container-custom">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link 
-            to="/" 
-            className="flex items-center flex-shrink-0 -my-2"
+        {/* Desktop: nav-left | logo center | nav-right */}
+        <div className="hidden lg:grid grid-cols-[1fr_auto_1fr] items-center h-20 gap-8">
+          <div className="flex items-center justify-start gap-8">
+            {leftLinks.map((link) => (
+              <Link key={link.path} to={link.path} className={linkClass(link.path)}>
+                {link.name}
+              </Link>
+            ))}
+          </div>
+
+          <Link
+            to="/"
+            className="flex items-center justify-center flex-shrink-0 -my-2"
             onClick={() => window.scrollTo(0, 0)}
           >
-            <img 
-              src={logo} 
-              alt="CASE - Empresa Júnior" 
+            <img
+              src={logo}
+              alt="CASE - Empresa Júnior"
               className="h-14 md:h-16 w-auto object-contain"
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`text-sm font-medium transition-colors ${
-                  isActive(link.path)
-                    ? "text-white"
-                    : "text-white/80 hover:text-white"
-                }`}
-              >
+          <div className="flex items-center justify-end gap-8">
+            {rightLinks.map((link) => (
+              <Link key={link.path} to={link.path} className={linkClass(link.path)}>
                 {link.name}
               </Link>
             ))}
             <ContactDialog
               trigger={
-                <Button className="btn-highlight rounded-full px-6">
-                  Entre em Contato
+                <Button className="btn-highlight rounded-full px-6 font-mono text-xs uppercase tracking-[0.18em]">
+                  Contato
                 </Button>
               }
             />
           </div>
+        </div>
 
-          {/* Mobile Menu Button */}
+        {/* Mobile: logo center, menu button right */}
+        <div className="lg:hidden flex items-center justify-between h-20">
+          <div className="w-10" />
+          <Link
+            to="/"
+            className="flex items-center flex-shrink-0 -my-2"
+            onClick={() => window.scrollTo(0, 0)}
+          >
+            <img
+              src={logo}
+              alt="CASE - Empresa Júnior"
+              className="h-14 w-auto object-contain"
+            />
+          </Link>
           <button
-            className="lg:hidden p-2"
+            className="p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
