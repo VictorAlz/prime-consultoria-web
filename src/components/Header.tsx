@@ -3,7 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 import ContactDialog from "@/components/ContactDialog";
-import logo from "@/assets/logo.png";
+import logoAsset from "@/assets/case-logo-descritivo.png.asset.json";
+const logo = logoAsset.url;
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -72,7 +73,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-14 md:h-16 w-auto object-contain"
+              className="h-12 md:h-14 w-auto object-contain invert brightness-0"
             />
           </Link>
 
@@ -103,7 +104,7 @@ const Header = () => {
             <img
               src={logo}
               alt="CASE - Empresa Júnior"
-              className="h-14 w-auto object-contain"
+              className="h-12 w-auto object-contain invert brightness-0"
             />
           </Link>
           <button
