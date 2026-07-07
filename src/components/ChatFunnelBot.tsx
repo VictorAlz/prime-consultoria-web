@@ -248,11 +248,16 @@ const ChatFunnelBot = () => {
         <button
           onClick={() => setOpen(true)}
           aria-label="Abrir chat com especialista"
-          className="fixed bottom-6 right-6 z-50 flex items-center gap-2 pl-4 pr-5 py-3 rounded-full bg-highlight text-white shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300"
+          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-white/20"
         >
-          <MessageCircle className="w-5 h-5" />
-          <span className="text-sm font-semibold hidden sm:inline">Falar com especialista</span>
-          <span className="text-sm font-semibold sm:hidden">Chat</span>
+          <img
+            src={attendantAvatar}
+            alt="Atendente CaseEJ"
+            className="w-full h-full object-cover"
+            loading="lazy"
+            width={56}
+            height={56}
+          />
         </button>
       )}
 
