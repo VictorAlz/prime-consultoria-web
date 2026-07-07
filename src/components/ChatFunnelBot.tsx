@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
-import { MessageCircle, X, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { X, Send, Loader2, CheckCircle2 } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
+import attendantAvatar from "@/assets/attendant-avatar.jpg";
 
 type Step = {
   key: "name" | "email" | "phone" | "company" | "position" | "notes";
