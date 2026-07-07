@@ -246,7 +246,7 @@ const ChatFunnelBot = () => {
       {/* Launcher */}
       {!open && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
-          <div className="bg-background border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-foreground animate-in fade-in slide-in-from-right-2 max-w-[200px] text-right">
+          <div className="bg-background border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-foreground font-sans text-center animate-in fade-in slide-in-from-right-2 max-w-[200px]">
             Conte-nos como podemos ajudar o seu negócio a crescer!
           </div>
           <button
