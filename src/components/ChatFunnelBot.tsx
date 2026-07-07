@@ -245,20 +245,25 @@ const ChatFunnelBot = () => {
     <>
       {/* Launcher */}
       {!open && (
-        <button
-          onClick={() => setOpen(true)}
-          aria-label="Abrir chat com especialista"
-          className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-white/20"
-        >
-          <img
-            src={attendantAvatar}
-            alt="Atendente CaseEJ"
-            className="w-full h-full object-cover"
-            loading="lazy"
-            width={56}
-            height={56}
-          />
-        </button>
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-3">
+          <div className="bg-background border border-border rounded-xl px-4 py-2.5 shadow-lg text-sm text-foreground animate-in fade-in slide-in-from-right-2 max-w-[200px] text-right">
+            Conte-nos como podemos ajudar o seu negócio a crescer!
+          </div>
+          <button
+            onClick={() => setOpen(true)}
+            aria-label="Abrir chat com especialista"
+            className="w-14 h-14 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all duration-300 overflow-hidden border-2 border-white/20 shrink-0"
+          >
+            <img
+              src={attendantAvatar}
+              alt="Atendente CaseEJ"
+              className="w-full h-full object-cover"
+              loading="lazy"
+              width={56}
+              height={56}
+            />
+          </button>
+        </div>
       )}
 
       {/* Panel */}
